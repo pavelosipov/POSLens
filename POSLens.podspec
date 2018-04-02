@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'POSLens'
-  s.version      = '1.0.0'
+  s.version      = '1.0.1'
   s.license      = 'MIT'
   s.summary      = 'Library for thread-safe atomic object updates and persisting.'
   s.homepage     = 'https://github.com/pavelosipov/POSLens'
