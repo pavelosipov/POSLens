@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - POSValueStore
 
-- (BOOL)saveValue:(nullable POSLensValue *)value error:(NSError **)error {
+- (BOOL)saveValue:(nullable POSLensValue<NSCoding> *)value error:(NSError **)error {
     @try {
         if (value == nil) {
             return [self removeData:error];
@@ -33,14 +33,14 @@ NS_ASSUME_NONNULL_BEGIN
     }
 }
 
-- (nullable POSLensValue *)loadValue:(NSError **)error {
+- (nullable POSLensValue<NSCoding> *)loadValue:(NSError **)error {
     @try {
         NSData *data = [self loadData:error];
         if (!data) {
             return nil;
         }
         NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
-        POSLensValue *value = [unarchiver decodeObject];
+        POSLensValue<NSCoding> *value = [unarchiver decodeObject];
         POSL_CHECK([value conformsToProtocol:@protocol(POSLensPolicy)]);
         POSL_CHECK([value conformsToProtocol:@protocol(NSCopying)]);
         return value;
