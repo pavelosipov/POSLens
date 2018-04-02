@@ -1,0 +1,618 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		33E1E26D0F71EC9D5C8DEDB0 /* libPods-All-POSLens.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CF9EB3A9C4C69E08650AFA4A /* libPods-All-POSLens.a */; };
+		97FAB67744B4C17C90E81D0F /* libPods-All-POSLensTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A272422DE980795F30E24EAE /* libPods-All-POSLensTests.a */; };
+		E980C4C1203A0971002E1558 /* NSError+POSL.m in Sources */ = {isa = PBXBuildFile; fileRef = E980C4A5203A0971002E1558 /* NSError+POSL.m */; };
+		E980C4C2203A0971002E1558 /* NSException+POSL.m in Sources */ = {isa = PBXBuildFile; fileRef = E980C4A7203A0971002E1558 /* NSException+POSL.m */; };
+		E980C4C3203A0971002E1558 /* POSLens.m in Sources */ = {isa = PBXBuildFile; fileRef = E980C4AA203A0971002E1558 /* POSLens.m */; };
+		E980C4C4203A0971002E1558 /* POSLensValue.m in Sources */ = {isa = PBXBuildFile; fileRef = E980C4AC203A0971002E1558 /* POSLensValue.m */; };
+		E980C4C5203A0971002E1558 /* POSEphemeralValueStore.m in Sources */ = {isa = PBXBuildFile; fileRef = E980C4AF203A0971002E1558 /* POSEphemeralValueStore.m */; };
+		E980C4C6203A0971002E1558 /* POSFileValueStore.m in Sources */ = {isa = PBXBuildFile; fileRef = E980C4B1203A0971002E1558 /* POSFileValueStore.m */; };
+		E980C4C7203A0971002E1558 /* POSKeychainValueStore.m in Sources */ = {isa = PBXBuildFile; fileRef = E980C4B3203A0971002E1558 /* POSKeychainValueStore.m */; };
+		E980C4C8203A0971002E1558 /* POSPersistentValueStore.m in Sources */ = {isa = PBXBuildFile; fileRef = E980C4B5203A0971002E1558 /* POSPersistentValueStore.m */; };
+		E980C4C9203A0971002E1558 /* POSUserDefaultsValueStore.m in Sources */ = {isa = PBXBuildFile; fileRef = E980C4B7203A0971002E1558 /* POSUserDefaultsValueStore.m */; };
+		E980C4CD203A097E002E1558 /* POSLensTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E980C4BB203A0971002E1558 /* POSLensTests.m */; };
+		E980C4CE203A0984002E1558 /* POSPersonSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = E980C4BE203A0971002E1558 /* POSPersonSettings.m */; };
+		E980C4CF203A098A002E1558 /* POSPersonSettingsStore.m in Sources */ = {isa = PBXBuildFile; fileRef = E980C4C0203A0971002E1558 /* POSPersonSettingsStore.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E980C49D203A094C002E1558 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E980C47F2039ABD3002E1558 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E980C4862039ABD3002E1558;
+			remoteInfo = POSLens;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E980C4852039ABD3002E1558 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		49346F563F7CC2151EC48925 /* Pods-All-POSLensTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-POSLensTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-POSLensTests/Pods-All-POSLensTests.release.xcconfig"; sourceTree = "<group>"; };
+		512A80F08ACDFDDE6E094156 /* Pods-All-POSLensTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-POSLensTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-POSLensTests/Pods-All-POSLensTests.debug.xcconfig"; sourceTree = "<group>"; };
+		6AEA76A0B29952A6419D42DC /* Pods-All-POSLens.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-POSLens.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-POSLens/Pods-All-POSLens.release.xcconfig"; sourceTree = "<group>"; };
+		A272422DE980795F30E24EAE /* libPods-All-POSLensTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-All-POSLensTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF9EB3A9C4C69E08650AFA4A /* libPods-All-POSLens.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-All-POSLens.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E980C4872039ABD3002E1558 /* libPOSLens.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPOSLens.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		E980C497203A094C002E1558 /* POSLensTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = POSLensTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E980C4A4203A0971002E1558 /* NSError+POSL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+POSL.h"; sourceTree = "<group>"; };
+		E980C4A5203A0971002E1558 /* NSError+POSL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+POSL.m"; sourceTree = "<group>"; };
+		E980C4A6203A0971002E1558 /* NSException+POSL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSException+POSL.h"; sourceTree = "<group>"; };
+		E980C4A7203A0971002E1558 /* NSException+POSL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSException+POSL.m"; sourceTree = "<group>"; };
+		E980C4A9203A0971002E1558 /* POSLens.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POSLens.h; sourceTree = "<group>"; };
+		E980C4AA203A0971002E1558 /* POSLens.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POSLens.m; sourceTree = "<group>"; };
+		E980C4AB203A0971002E1558 /* POSLensValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POSLensValue.h; sourceTree = "<group>"; };
+		E980C4AC203A0971002E1558 /* POSLensValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POSLensValue.m; sourceTree = "<group>"; };
+		E980C4AE203A0971002E1558 /* POSEphemeralValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POSEphemeralValueStore.h; sourceTree = "<group>"; };
+		E980C4AF203A0971002E1558 /* POSEphemeralValueStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POSEphemeralValueStore.m; sourceTree = "<group>"; };
+		E980C4B0203A0971002E1558 /* POSFileValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POSFileValueStore.h; sourceTree = "<group>"; };
+		E980C4B1203A0971002E1558 /* POSFileValueStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POSFileValueStore.m; sourceTree = "<group>"; };
+		E980C4B2203A0971002E1558 /* POSKeychainValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POSKeychainValueStore.h; sourceTree = "<group>"; };
+		E980C4B3203A0971002E1558 /* POSKeychainValueStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POSKeychainValueStore.m; sourceTree = "<group>"; };
+		E980C4B4203A0971002E1558 /* POSPersistentValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POSPersistentValueStore.h; sourceTree = "<group>"; };
+		E980C4B5203A0971002E1558 /* POSPersistentValueStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POSPersistentValueStore.m; sourceTree = "<group>"; };
+		E980C4B6203A0971002E1558 /* POSUserDefaultsValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POSUserDefaultsValueStore.h; sourceTree = "<group>"; };
+		E980C4B7203A0971002E1558 /* POSUserDefaultsValueStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POSUserDefaultsValueStore.m; sourceTree = "<group>"; };
+		E980C4B8203A0971002E1558 /* POSValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POSValueStore.h; sourceTree = "<group>"; };
+		E980C4BB203A0971002E1558 /* POSLensTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POSLensTests.m; sourceTree = "<group>"; };
+		E980C4BD203A0971002E1558 /* POSPersonSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POSPersonSettings.h; sourceTree = "<group>"; };
+		E980C4BE203A0971002E1558 /* POSPersonSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POSPersonSettings.m; sourceTree = "<group>"; };
+		E980C4BF203A0971002E1558 /* POSPersonSettingsStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POSPersonSettingsStore.h; sourceTree = "<group>"; };
+		E980C4C0203A0971002E1558 /* POSPersonSettingsStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POSPersonSettingsStore.m; sourceTree = "<group>"; };
+		F0A54E3A44BC1E22477A2351 /* Pods-All-POSLens.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-POSLens.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-POSLens/Pods-All-POSLens.debug.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E980C4842039ABD3002E1558 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				33E1E26D0F71EC9D5C8DEDB0 /* libPods-All-POSLens.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E980C494203A094C002E1558 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97FAB67744B4C17C90E81D0F /* libPods-All-POSLensTests.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		715ABD95741A5D38D63B63A4 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				F0A54E3A44BC1E22477A2351 /* Pods-All-POSLens.debug.xcconfig */,
+				6AEA76A0B29952A6419D42DC /* Pods-All-POSLens.release.xcconfig */,
+				512A80F08ACDFDDE6E094156 /* Pods-All-POSLensTests.debug.xcconfig */,
+				49346F563F7CC2151EC48925 /* Pods-All-POSLensTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		84A9534ED4FE206BF1315348 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CF9EB3A9C4C69E08650AFA4A /* libPods-All-POSLens.a */,
+				A272422DE980795F30E24EAE /* libPods-All-POSLensTests.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E980C47E2039ABD3002E1558 = {
+			isa = PBXGroup;
+			children = (
+				E980C4A2203A0971002E1558 /* Classes */,
+				E980C4B9203A0971002E1558 /* Tests */,
+				E980C4882039ABD3002E1558 /* Products */,
+				715ABD95741A5D38D63B63A4 /* Pods */,
+				84A9534ED4FE206BF1315348 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		E980C4882039ABD3002E1558 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E980C4872039ABD3002E1558 /* libPOSLens.a */,
+				E980C497203A094C002E1558 /* POSLensTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E980C4A2203A0971002E1558 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				E980C4A3203A0971002E1558 /* ErrorHandling */,
+				E980C4A8203A0971002E1558 /* Lens */,
+				E980C4AD203A0971002E1558 /* ValueStores */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		E980C4A3203A0971002E1558 /* ErrorHandling */ = {
+			isa = PBXGroup;
+			children = (
+				E980C4A4203A0971002E1558 /* NSError+POSL.h */,
+				E980C4A5203A0971002E1558 /* NSError+POSL.m */,
+				E980C4A6203A0971002E1558 /* NSException+POSL.h */,
+				E980C4A7203A0971002E1558 /* NSException+POSL.m */,
+			);
+			path = ErrorHandling;
+			sourceTree = "<group>";
+		};
+		E980C4A8203A0971002E1558 /* Lens */ = {
+			isa = PBXGroup;
+			children = (
+				E980C4A9203A0971002E1558 /* POSLens.h */,
+				E980C4AA203A0971002E1558 /* POSLens.m */,
+				E980C4AB203A0971002E1558 /* POSLensValue.h */,
+				E980C4AC203A0971002E1558 /* POSLensValue.m */,
+			);
+			path = Lens;
+			sourceTree = "<group>";
+		};
+		E980C4AD203A0971002E1558 /* ValueStores */ = {
+			isa = PBXGroup;
+			children = (
+				E980C4AE203A0971002E1558 /* POSEphemeralValueStore.h */,
+				E980C4AF203A0971002E1558 /* POSEphemeralValueStore.m */,
+				E980C4B0203A0971002E1558 /* POSFileValueStore.h */,
+				E980C4B1203A0971002E1558 /* POSFileValueStore.m */,
+				E980C4B2203A0971002E1558 /* POSKeychainValueStore.h */,
+				E980C4B3203A0971002E1558 /* POSKeychainValueStore.m */,
+				E980C4B4203A0971002E1558 /* POSPersistentValueStore.h */,
+				E980C4B5203A0971002E1558 /* POSPersistentValueStore.m */,
+				E980C4B6203A0971002E1558 /* POSUserDefaultsValueStore.h */,
+				E980C4B7203A0971002E1558 /* POSUserDefaultsValueStore.m */,
+				E980C4B8203A0971002E1558 /* POSValueStore.h */,
+			);
+			path = ValueStores;
+			sourceTree = "<group>";
+		};
+		E980C4B9203A0971002E1558 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				E980C4BC203A0971002E1558 /* TestData */,
+				E980C4BB203A0971002E1558 /* POSLensTests.m */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		E980C4BC203A0971002E1558 /* TestData */ = {
+			isa = PBXGroup;
+			children = (
+				E980C4BD203A0971002E1558 /* POSPersonSettings.h */,
+				E980C4BE203A0971002E1558 /* POSPersonSettings.m */,
+				E980C4BF203A0971002E1558 /* POSPersonSettingsStore.h */,
+				E980C4C0203A0971002E1558 /* POSPersonSettingsStore.m */,
+			);
+			path = TestData;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E980C4862039ABD3002E1558 /* POSLens */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E980C4902039ABD3002E1558 /* Build configuration list for PBXNativeTarget "POSLens" */;
+			buildPhases = (
+				DDDA3B32F70F66F20CA17E62 /* [CP] Check Pods Manifest.lock */,
+				E980C4832039ABD3002E1558 /* Sources */,
+				E980C4842039ABD3002E1558 /* Frameworks */,
+				E980C4852039ABD3002E1558 /* CopyFiles */,
+				5B7CAB33B39A39B2705FBEDC /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = POSLens;
+			productName = POSLens;
+			productReference = E980C4872039ABD3002E1558 /* libPOSLens.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		E980C496203A094C002E1558 /* POSLensTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E980C49F203A094C002E1558 /* Build configuration list for PBXNativeTarget "POSLensTests" */;
+			buildPhases = (
+				CF6F51D685C75435B6BE8A68 /* [CP] Check Pods Manifest.lock */,
+				E980C493203A094C002E1558 /* Sources */,
+				E980C494203A094C002E1558 /* Frameworks */,
+				E980C495203A094C002E1558 /* Resources */,
+				C73DE6DECBA8619EF453F662 /* [CP] Embed Pods Frameworks */,
+				68DCB876441DB4B6E9A688F7 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E980C49E203A094C002E1558 /* PBXTargetDependency */,
+			);
+			name = POSLensTests;
+			productName = Tests;
+			productReference = E980C497203A094C002E1558 /* POSLensTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E980C47F2039ABD3002E1558 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = "Pavel Osipov";
+				TargetAttributes = {
+					E980C4862039ABD3002E1558 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					E980C496203A094C002E1558 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = E980C4822039ABD3002E1558 /* Build configuration list for PBXProject "POSLens" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = E980C47E2039ABD3002E1558;
+			productRefGroup = E980C4882039ABD3002E1558 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E980C4862039ABD3002E1558 /* POSLens */,
+				E980C496203A094C002E1558 /* POSLensTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E980C495203A094C002E1558 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5B7CAB33B39A39B2705FBEDC /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-All-POSLens/Pods-All-POSLens-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		68DCB876441DB4B6E9A688F7 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-All-POSLensTests/Pods-All-POSLensTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C73DE6DECBA8619EF453F662 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-All-POSLensTests/Pods-All-POSLensTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CF6F51D685C75435B6BE8A68 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-All-POSLensTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DDDA3B32F70F66F20CA17E62 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-All-POSLens-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E980C4832039ABD3002E1558 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E980C4C2203A0971002E1558 /* NSException+POSL.m in Sources */,
+				E980C4C8203A0971002E1558 /* POSPersistentValueStore.m in Sources */,
+				E980C4C3203A0971002E1558 /* POSLens.m in Sources */,
+				E980C4C6203A0971002E1558 /* POSFileValueStore.m in Sources */,
+				E980C4C5203A0971002E1558 /* POSEphemeralValueStore.m in Sources */,
+				E980C4C4203A0971002E1558 /* POSLensValue.m in Sources */,
+				E980C4C7203A0971002E1558 /* POSKeychainValueStore.m in Sources */,
+				E980C4C1203A0971002E1558 /* NSError+POSL.m in Sources */,
+				E980C4C9203A0971002E1558 /* POSUserDefaultsValueStore.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E980C493203A094C002E1558 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E980C4CD203A097E002E1558 /* POSLensTests.m in Sources */,
+				E980C4CF203A098A002E1558 /* POSPersonSettingsStore.m in Sources */,
+				E980C4CE203A0984002E1558 /* POSPersonSettings.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E980C49E203A094C002E1558 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E980C4862039ABD3002E1558 /* POSLens */;
+			targetProxy = E980C49D203A094C002E1558 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		E980C48E2039ABD3002E1558 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		E980C48F2039ABD3002E1558 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E980C4912039ABD3002E1558 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F0A54E3A44BC1E22477A2351 /* Pods-All-POSLens.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 9KQ66ZZZW7;
+				OTHER_LDFLAGS = "$(inherited)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E980C4922039ABD3002E1558 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6AEA76A0B29952A6419D42DC /* Pods-All-POSLens.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 9KQ66ZZZW7;
+				OTHER_LDFLAGS = "$(inherited)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		E980C4A0203A094C002E1558 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 512A80F08ACDFDDE6E094156 /* Pods-All-POSLensTests.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 9KQ66ZZZW7;
+				INFOPLIST_FILE = Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_LDFLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.pavelosipov.Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E980C4A1203A094C002E1558 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 49346F563F7CC2151EC48925 /* Pods-All-POSLensTests.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 9KQ66ZZZW7;
+				INFOPLIST_FILE = Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_LDFLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.pavelosipov.Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E980C4822039ABD3002E1558 /* Build configuration list for PBXProject "POSLens" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E980C48E2039ABD3002E1558 /* Debug */,
+				E980C48F2039ABD3002E1558 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E980C4902039ABD3002E1558 /* Build configuration list for PBXNativeTarget "POSLens" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E980C4912039ABD3002E1558 /* Debug */,
+				E980C4922039ABD3002E1558 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E980C49F203A094C002E1558 /* Build configuration list for PBXNativeTarget "POSLensTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E980C4A0203A094C002E1558 /* Debug */,
+				E980C4A1203A094C002E1558 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E980C47F2039ABD3002E1558 /* Project object */;
+}
