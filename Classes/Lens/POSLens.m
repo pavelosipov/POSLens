@@ -187,7 +187,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable id)value {
     __block POSLensValue *value = nil;
     dispatch_sync(_syncQueue, ^{
-        value = _currentValue ?: self.defaultValue;
+        value = self->_currentValue ?: self.defaultValue;
     });
     return value;
 }
@@ -219,8 +219,8 @@ NS_ASSUME_NONNULL_BEGIN
     __block POSLensValue *updatedValue = _currentValue;
     dispatch_barrier_sync(_syncQueue, ^{
         updatedValue = updateBlock(updatedValue, &updateError);
-        if (updateError == nil && updatedValue != _currentValue && ![updatedValue isEqual:_currentValue]) {
-            result = [_store saveValue:updatedValue error:&updateError];
+        if (updateError == nil && updatedValue != self->_currentValue && ![updatedValue isEqual:self->_currentValue]) {
+            result = [self->_store saveValue:updatedValue error:&updateError];
         }
         if (result) {
             self.currentValue = updatedValue;

@@ -1,3 +1,5 @@
+[![Version](http://img.shields.io/cocoapods/v/POSLens.svg)](http://cocoapods.org/?q=POSLens)
+
 ## What is POSLens?
 
 POSLens is an Objective-C library for storing and updating [persistent data structures](https://en.wikipedia.org/wiki/Persistent_data_structure) using [functional lenses](https://broomburgo.github.io/fun-ios/post/lenses-and-prisms-in-swift-a-pragmatic-approach/).
