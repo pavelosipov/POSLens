@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// Provides read-only access for some part of the object.
 ///
-@interface POSLens<__covariant ValueType> : NSObject
+@interface POSLens<__covariant ValueType:POSLensValue *> : NSObject
 
 ///
 /// @brief      Actual instance of POSLensValue object.
@@ -88,7 +88,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// Provides read-write access for the some part of the object's data structure.
 ///
-@interface POSMutableLens<ValueType> : POSLens<ValueType>
+@interface POSMutableLens<__covariant ValueType:POSLensValue *> : POSLens<ValueType>
 
 ///
 /// @brief      Fluent version of `lensForKey:` method which retrieves lens for underlying property

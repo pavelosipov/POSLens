@@ -132,7 +132,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - POSMutableLens
 
-- (BOOL)updateValueWithBlock:(id _Nullable (^)(id _Nullable, NSError **error))updateBlock
+- (BOOL)updateValueWithBlock:(POSLensValue * _Nullable(^)(POSLensValue * _Nullable, NSError **error))updateBlock
                        error:(NSError **)error {
     POSL_CHECK(updateBlock);
     @weakify(self);
@@ -211,7 +211,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - POSMutableLens
 
-- (BOOL)updateValueWithBlock:(id  _Nullable (^)(id _Nullable, NSError **error))updateBlock
+- (BOOL)updateValueWithBlock:(POSLensValue *  _Nullable (^)(POSLensValue * _Nullable, NSError **error))updateBlock
                        error:(NSError **)error {
     POSL_CHECK(updateBlock);
     __block BOOL result = NO;
