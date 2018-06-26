@@ -9,8 +9,8 @@
 #import "POSPersonSettings.h"
 #import "POSPersonSettingsStore.h"
 #import <POSLens/POSLens.h>
-#import <POSLens/NSError+POSL.h>
 #import <POSLens/POSEphemeralValueStore.h>
+#import <POSErrorHandling/POSErrorHandling.h>
 #import <XCTest/XCTest.h>
 
 @interface POSLensTests : XCTestCase
@@ -20,13 +20,13 @@
 
 - (void)testObjectLensPolicyConformance {
     POSPersonSettings *settingsV1 = [[POSPersonSettings alloc] initWithName:@"Pavel" age:10 privacySettings:nil];
-    XCTAssertEqualObjects([settingsV1 posl_valueForKey:@"name"], @"Pavel");
-    XCTAssertEqualObjects([settingsV1 posl_valueForKey:@"age"], @10);
-    POSPersonSettings *settingsV2 = [settingsV1 posl_setValue:@"Andrey" forKey:@"name"];
+    XCTAssertEqualObjects([settingsV1 pos_valueForKey:@"name"], @"Pavel");
+    XCTAssertEqualObjects([settingsV1 pos_valueForKey:@"age"], @10);
+    POSPersonSettings *settingsV2 = [settingsV1 pos_setValue:@"Andrey" forKey:@"name"];
     XCTAssertTrue(settingsV1 != settingsV2);
     XCTAssertEqualObjects(settingsV2.name, @"Andrey");
     XCTAssertTrue(settingsV2.age == 10);
-    POSPersonSettings *settingsV3 = [settingsV1 posl_setValue:@20 forKey:@"age"];
+    POSPersonSettings *settingsV3 = [settingsV1 pos_setValue:@20 forKey:@"age"];
     XCTAssertTrue(settingsV1 != settingsV3);
     XCTAssertEqualObjects(settingsV3.name, @"Pavel");
     XCTAssertTrue(settingsV3.age == 20);
@@ -34,13 +34,13 @@
 
 - (void)testDictionaryLensPolicyConformance {
     NSDictionary *settingsV1 = @{@"name": @"Pavel", @"age": @10};
-    XCTAssertEqualObjects([settingsV1 posl_valueForKey:@"name"], @"Pavel");
-    XCTAssertEqualObjects([settingsV1 posl_valueForKey:@"age"], @10);
-    NSDictionary *settingsV2 = [settingsV1 posl_setValue:@"Andrey" forKey:@"name"];
+    XCTAssertEqualObjects([settingsV1 pos_valueForKey:@"name"], @"Pavel");
+    XCTAssertEqualObjects([settingsV1 pos_valueForKey:@"age"], @10);
+    NSDictionary *settingsV2 = [settingsV1 pos_setValue:@"Andrey" forKey:@"name"];
     XCTAssertTrue(settingsV1 != settingsV2);
     XCTAssertEqualObjects(settingsV2[@"name"], @"Andrey");
     XCTAssertEqualObjects(settingsV2[@"age"], @10);
-    NSDictionary *settingsV3 = [settingsV1 posl_setValue:@20 forKey:@"age"];
+    NSDictionary *settingsV3 = [settingsV1 pos_setValue:@20 forKey:@"age"];
     XCTAssertTrue(settingsV1 != settingsV3);
     XCTAssertEqualObjects(settingsV3[@"name"], @"Pavel");
     XCTAssertEqualObjects(settingsV3[@"age"], @20);
@@ -202,12 +202,12 @@
     BOOL updated = [emailSettings updateValue:@"andrey@mail.ru" error:&error];
     XCTAssertFalse(updated);
     XCTAssertTrue(settingsValue == settings.value);
-    XCTAssertEqualObjects(error.domain, kPOSLErrorDomain);
+    XCTAssertEqualObjects(error.domain, kPOSErrorDomain);
     XCTAssertEqualObjects(emailSettings.value, @"pavel@mail.ru");
     BOOL removed = [settings removeValue:&error];
     XCTAssertFalse(removed);
     XCTAssertTrue(settingsValue == settings.value);
-    XCTAssertEqualObjects(error.domain, kPOSLErrorDomain);
+    XCTAssertEqualObjects(error.domain, kPOSErrorDomain);
     XCTAssertEqualObjects(emailSettings.value, @"pavel@mail.ru");
 }
 
@@ -352,7 +352,7 @@
     BOOL updated = [emailSetting updateValue:@"pavel@mail.ru" error:&error];
     XCTAssertFalse(updated);
     XCTAssertNotNil(error);
-    XCTAssertTrue(error.code == POSLErrorCodeUpdate);
+    XCTAssertTrue(error.pos_category == kPOSInternalErrorCategory);
 }
 
 - (void)testUpdateLensValueSuccessWithNilParentWithDefaultValue {

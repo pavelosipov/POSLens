@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///             without default value specification.
 ///             @code lens[account.email][@"credentials"]["accessToken"] @endcode
 ///
-/// @remark     Use that method only if there is no default value for accessing property,
+/// @remarks    Use that method only if there is no default value for accessing property,
 ///             or you are not going to modify its underlying properties.
 ///
 - (POSLens *)objectForKeyedSubscript:(NSString *)key;
@@ -64,7 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// @brief      Method for retrieving lens without default value specification.
 ///
-/// @remark     Use that method only if there is no default value for accessing object's property,
+/// @remarks    Use that method only if there is no default value for accessing object's property,
 ///             or you are not going to modify its subgraph.
 ///
 - (POSLens *)lensForKey:(NSString *)key;

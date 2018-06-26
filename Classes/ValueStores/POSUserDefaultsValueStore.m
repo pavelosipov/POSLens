@@ -7,8 +7,7 @@
 //
 
 #import "POSUserDefaultsValueStore.h"
-#import "NSError+POSL.h"
-#import "NSException+POSL.h"
+#import <POSErrorHandling/POSErrorHandling.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -21,8 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithUserDefaults:(NSUserDefaults *)userDefaults
                             valueKey:(NSString *)valueKey {
-    POSL_CHECK(userDefaults);
-    POSL_CHECK(valueKey);
+    POS_CHECK(userDefaults);
+    POS_CHECK(valueKey);
     if (self = [super init]) {
         _store = userDefaults;
         _valueKey = [valueKey copy];
@@ -33,10 +32,10 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - POSPersistentValueStore
 
 - (BOOL)saveData:(NSData *)data error:(NSError **)error {
-    POSL_CHECK(data);
+    POS_CHECK(data);
     [_store setObject:data forKey:_valueKey];
     if (![_store synchronize]) {
-        POSLAssignError(error, [NSError posl_systemErrorWithFormat:@"Failed to synchronize NSUserDefaults."]);
+        POSAssignError(error, [NSError pos_systemErrorWithFormat:@"Failed to synchronize NSUserDefaults."]);
         return NO;
     }
     return YES;
@@ -48,8 +47,8 @@ NS_ASSUME_NONNULL_BEGIN
         return nil;
     }
     if (![data isKindOfClass:NSData.class]) {
-        POSLAssignError(error, [NSError posl_internalErrorWithFormat:
-                                 @"Unexpected object at key '%@' in NSUserDefaults: %@", _valueKey, data]);
+        POSAssignError(error, [NSError pos_internalErrorWithFormat:
+                               @"Unexpected object at key '%@' in NSUserDefaults: %@", _valueKey, data]);
         return nil;
     }
     return data;

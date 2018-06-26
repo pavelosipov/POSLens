@@ -13,8 +13,7 @@
 #import "POSKeychainValueStore.h"
 #import "POSUserDefaultsValueStore.h"
 
-#import "NSError+POSL.h"
-#import "NSException+POSL.h"
+#import "NSError+POSLens.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -92,8 +91,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithParent:(POSMutableLens<POSLensValue *> *)parent
                   defaultValue:(nullable POSLensValue *)defaultValue
                            key:(NSString *)key {
-    POSL_CHECK(parent);
-    POSL_CHECK(key);
+    POS_CHECK(parent);
+    POS_CHECK(key);
     if (self = [super initWithDefaultValue:defaultValue]) {
         _parent = parent;
         _key = [key copy];
@@ -104,7 +103,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - POSLens
 
 - (nullable id)value {
-    id value = [_parent.value posl_valueForKey:_key];
+    id value = [_parent.value pos_valueForKey:_key];
     return value ?: self.defaultValue;
 }
 
@@ -116,13 +115,13 @@ NS_ASSUME_NONNULL_BEGIN
     NSString *key = _key;
     POSLensValue *defaultValue = self.defaultValue;
     return [_parent.recursiveValueUpdates map:^id _Nullable(POSLensValue * _Nullable parentValue) {
-        id value = [parentValue posl_valueForKey:key];
+        id value = [parentValue pos_valueForKey:key];
         return value ?: defaultValue;
     }];
 }
 
 - (instancetype)lensForKey:(NSString *)key defaultValue:(nullable POSLensValue *)defaultValue {
-    POSL_CHECK(key);
+    POS_CHECK(key);
     return [[POSPropertyLens alloc] initWithParent:self defaultValue:defaultValue key:key];
 }
 
@@ -134,11 +133,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)updateValueWithBlock:(POSLensValue * _Nullable(^)(POSLensValue * _Nullable, NSError **error))updateBlock
                        error:(NSError **)error {
-    POSL_CHECK(updateBlock);
+    POS_CHECK(updateBlock);
     @weakify(self);
     return [_parent updateValueWithBlock:^POSLensValue * _Nullable(POSLensValue * _Nullable parentValue, NSError **error) {
         @strongify(self); // self is never nil because of synchronous nature of updateBlock.
-        id currentValue = [parentValue posl_valueForKey:self->_key];
+        id currentValue = [parentValue pos_valueForKey:self->_key];
         id updatedValue = updateBlock(currentValue, error);
         if (*error != nil) {
             return parentValue;
@@ -146,12 +145,12 @@ NS_ASSUME_NONNULL_BEGIN
         if (updatedValue == currentValue || [updatedValue isEqual:currentValue]) {
             return parentValue;
         } else if (parentValue != nil) {
-            return [parentValue posl_setValue:updatedValue forKey:self->_key];
+            return [parentValue pos_setValue:updatedValue forKey:self->_key];
         } else if (parentValue == nil && self.parent.defaultValue != nil) {
-            return [self.parent.defaultValue posl_setValue:updatedValue forKey:self->_key];
+            return [self.parent.defaultValue pos_setValue:updatedValue forKey:self->_key];
         }
-        POSLAssignError(error, [NSError posl_updateErrorWithFormat:
-                                @"Parent of property %@ has neither value or default value.", self.keyPath]);
+        POSAssignError(error, [NSError pos_lensErrorWithFormat:
+                               @"Parent of property %@ has neither value or default value.", self.keyPath]);
         return parentValue;
     } error:error];
 }
@@ -172,7 +171,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithDefaultValue:(nullable POSLensValue *)defaultValue
                         currentValue:(nullable POSLensValue *)currentValue
                                store:(id<POSValueStore>)store {
-    POSL_CHECK(store);
+    POS_CHECK(store);
     if (self = [super initWithDefaultValue:defaultValue]) {
         _syncQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         _store = store;
@@ -201,7 +200,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (__kindof POSLens *)lensForKey:(NSString *)key defaultValue:(nullable POSLensValue *)defaultValue {
-    POSL_CHECK(key);
+    POS_CHECK(key);
     return [[POSPropertyLens alloc] initWithParent:self defaultValue:defaultValue key:key];
 }
 
@@ -213,7 +212,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)updateValueWithBlock:(POSLensValue *  _Nullable (^)(POSLensValue * _Nullable, NSError **error))updateBlock
                        error:(NSError **)error {
-    POSL_CHECK(updateBlock);
+    POS_CHECK(updateBlock);
     __block BOOL result = NO;
     __block NSError *updateError = nil;
     __block POSLensValue *updatedValue = _currentValue;
@@ -226,7 +225,7 @@ NS_ASSUME_NONNULL_BEGIN
             self.currentValue = updatedValue;
         }
     });
-    POSLAssignError(error, updateError);
+    POSAssignError(error, updateError);
     if (result) {
         [_valueUpdatesSubject sendNext:updatedValue];
     }

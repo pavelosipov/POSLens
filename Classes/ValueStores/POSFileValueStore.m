@@ -7,8 +7,7 @@
 //
 
 #import "POSFileValueStore.h"
-#import "NSError+POSL.h"
-#import "NSException+POSL.h"
+#import "NSError+POSLens.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -19,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation POSFileValueStore
 
 - (instancetype)initWithFilePath:(NSString *)filePath {
-    POSL_CHECK(filePath);
+    POS_CHECK(filePath);
     if (self = [super init]) {
         _filePath = [filePath copy];
     }
@@ -29,10 +28,10 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - POSPersistentValueStore
 
 - (BOOL)saveData:(NSData *)data error:(NSError **)error {
-    POSL_CHECK(data);
+    POS_CHECK(data);
     NSError *cocoaError = nil;
     if (![data writeToFile:_filePath options:NSDataWritingAtomic error:&cocoaError]) {
-        POSLAssignError(error, [NSError posl_fileErrorWithPath:_filePath reason:cocoaError]);
+        POSAssignError(error, [NSError pos_fileErrorWithPath:_filePath reason:cocoaError]);
         return NO;
     }
     return YES;
@@ -45,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
     NSError *cocoaError = nil;
     NSData *data = [NSData dataWithContentsOfFile:_filePath options:NSDataReadingMappedIfSafe error:&cocoaError];
     if (cocoaError) {
-        POSLAssignError(error, [NSError posl_fileErrorWithPath:_filePath reason:cocoaError]);
+        POSAssignError(error, [NSError pos_fileErrorWithPath:_filePath reason:cocoaError]);
         return nil;
     }
     return data;
@@ -54,7 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)removeData:(NSError **)error {
     NSError *cocoaError = nil;
     if (![[NSFileManager defaultManager] removeItemAtPath:_filePath error:&cocoaError]) {
-        POSLAssignError(error, [NSError posl_fileErrorWithPath:_filePath reason:cocoaError]);
+        POSAssignError(error, [NSError pos_fileErrorWithPath:_filePath reason:cocoaError]);
         return NO;
     }
     return YES;

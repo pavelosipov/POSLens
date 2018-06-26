@@ -1,10 +1,11 @@
 source 'https://github.com/CocoaPods/Specs.git'
 
-platform :ios, '7.0'
+platform :ios, '8.0'
 workspace 'POSLens'
 
 abstract_target 'All' do
-    pod 'ReactiveObjC', :git => 'https://github.com/pavelosipov/ReactiveObjC.git', :inhibit_warnings => true
+    pod 'ReactiveObjC', :inhibit_warnings => true
+    pod 'POSErrorHandling', :git => 'https://github.com/pavelosipov/POSErrorHandling.git'
     target 'POSLens'
     target 'POSLensTests' do
         pod 'POSLens', :path => '.'

@@ -10,13 +10,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@implementation NSObject (POSL)
+@implementation NSObject (POSLens)
 
-- (nullable id)posl_valueForKey:(NSString *)key {
+- (nullable id)pos_valueForKey:(NSString *)key {
     return [self valueForKeyPath:key];
 }
 
-- (instancetype)posl_setValue:(nullable id)value forKey:(NSString *)key {
+- (instancetype)pos_setValue:(nullable id)value forKey:(NSString *)key {
     NSObject *selfCopy = [self copy];
     [selfCopy setValue:value forKeyPath:key];
     return selfCopy;
@@ -26,13 +26,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark -
 
-@implementation NSDictionary (POSL)
+@implementation NSDictionary (POSLens)
 
-- (nullable id)posl_valueForKey:(NSString *)key {
+- (nullable id)pos_valueForKey:(NSString *)key {
     return self[key];
 }
 
-- (instancetype)posl_setValue:(nullable id)value forKey:(NSString *)key {
+- (instancetype)pos_setValue:(nullable id)value forKey:(NSString *)key {
     NSMutableDictionary *selfCopy = [self mutableCopy];
     selfCopy[key] = value;
     return [selfCopy copy];

@@ -7,8 +7,7 @@
 //
 
 #import "POSPersonSettingsStore.h"
-#import "NSError+POSL.h"
-#import "NSException+POSL.h"
+#import <POSErrorHandling/POSErrorHandling.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -28,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark POSPersistentSettingsStore
 
 - (BOOL)saveData:(NSData *)data error:(NSError **)error {
-    POSLAssignError(error, [NSError posl_internalErrorWithFormat:@"Test error."]);
+    POSAssignError(error, [NSError pos_internalErrorWithFormat:@"Test error."]);
     return NO;
 }
 
@@ -42,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (BOOL)removeData:(NSError **)error {
-    POSL_CHECK_EX(NO, @"Remove error.");
+    POS_CHECK_EX(NO, @"Remove error.");
 }
 
 @end

@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param   key KVC field for NSObject instance or a keyed subscript for NSDictionary.
 /// @returns Actual value or nil if there is neither property with specified key or the owner of the value is nil.
 ///
-- (nullable id)posl_valueForKey:(NSString *)key;
+- (nullable id)pos_valueForKey:(NSString *)key;
 
 ///
 /// @brief   The method modifies value in two steps. Firstly it clones all of its direct
@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// @returns Updated value or nil if there is neither property with specified key or the owner of the value is nil.
 ///
-- (instancetype)posl_setValue:(nullable id)value forKey:(NSString *)key;
+- (instancetype)pos_setValue:(nullable id)value forKey:(NSString *)key;
 
 @end
 
@@ -48,12 +48,12 @@ typedef NSObject<POSLensPolicy, NSCopying> POSLensValue;
 
 #pragma mark -
 
-@interface NSObject (POSL) <POSLensPolicy>
+@interface NSObject (POSLens) <POSLensPolicy>
 @end
 
 #pragma mark -
 
-@interface NSDictionary (POSL) <POSLensPolicy>
+@interface NSDictionary (POSLens) <POSLensPolicy>
 @end
 
 NS_ASSUME_NONNULL_END

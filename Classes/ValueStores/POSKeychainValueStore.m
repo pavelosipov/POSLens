@@ -7,8 +7,7 @@
 //
 
 #import "POSKeychainValueStore.h"
-#import "NSError+POSL.h"
-#import "NSException+POSL.h"
+#import <POSErrorHandling/POSErrorHandling.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -28,8 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithValueKey:(NSString *)valueKey
                          service:(NSString *)service
                      accessGroup:(nullable NSString *)accessGroup {
-    POSL_CHECK(valueKey);
-    POSL_CHECK(service);
+    POS_CHECK(valueKey);
+    POS_CHECK(service);
     if (self = [super init]) {
         _valueKey = [valueKey copy];
         _service = [service copy];
@@ -41,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - POSPersistentValueStore
 
 - (BOOL)saveData:(NSData *)data error:(NSError **)error {
-    POSL_CHECK(data);
+    POS_CHECK(data);
     NSDictionary *query = [self p_dataKeyAttributes];
     OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)query, NULL);
     if (status == errSecSuccess) {
@@ -49,8 +48,8 @@ NS_ASSUME_NONNULL_BEGIN
         status = SecItemUpdate((__bridge CFDictionaryRef)query,
                                (__bridge CFDictionaryRef)updateAttributes);
         if (status != errSecSuccess) {
-            POSLAssignError(error, [NSError posl_systemErrorWithFormat:
-                                     @"Failed to update data in keychain, status=%@", @(status)]);
+            POSAssignError(error, [NSError pos_systemErrorWithFormat:
+                                   @"Failed to update data in keychain, status=%@", @(status)]);
             return NO;
         }
         return YES;
@@ -59,14 +58,14 @@ NS_ASSUME_NONNULL_BEGIN
         NSDictionary *attributes = [self p_dataKeyInsertAttributesForData:data];
         status = SecItemAdd((__bridge CFDictionaryRef)attributes, NULL);
         if (status != errSecSuccess) {
-            POSLAssignError(error, [NSError posl_systemErrorWithFormat:
-                                     @"Failed to insert data in keychain, status=%@", @(status)]);
+            POSAssignError(error, [NSError pos_systemErrorWithFormat:
+                                   @"Failed to insert data in keychain, status=%@", @(status)]);
             return NO;
         }
         return YES;
     }
-    POSLAssignError(error, [NSError posl_systemErrorWithFormat:
-                             @"Failed to lookup data in keychain, status=%@", @(status)]);
+    POSAssignError(error, [NSError pos_systemErrorWithFormat:
+                           @"Failed to lookup data in keychain, status=%@", @(status)]);
     return NO;
 }
 
@@ -80,8 +79,8 @@ NS_ASSUME_NONNULL_BEGIN
     if (status == errSecItemNotFound) {
         return nil;
     }
-    POSLAssignError(error, [NSError posl_systemErrorWithFormat:
-                             @"Failed to lookup data in keychain, status=%@", @(status)]);
+    POSAssignError(error, [NSError pos_systemErrorWithFormat:
+                           @"Failed to lookup data in keychain, status=%@", @(status)]);
     return nil;
 }
 
@@ -91,8 +90,8 @@ NS_ASSUME_NONNULL_BEGIN
     if (status == errSecSuccess || status == errSecItemNotFound) {
         return YES;
     }
-    POSLAssignError(error, [NSError posl_systemErrorWithFormat:
-                             @"Failed to delete data from keychain, status=%@", @(status)]);
+    POSAssignError(error, [NSError pos_systemErrorWithFormat:
+                           @"Failed to delete data from keychain, status=%@", @(status)]);
     return NO;
 }
 

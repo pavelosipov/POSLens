@@ -7,7 +7,6 @@
 //
 
 #import "POSEphemeralValueStore.h"
-#import "NSException+POSL.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

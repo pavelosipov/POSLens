@@ -7,8 +7,7 @@
 //
 
 #import "POSPersistentValueStore.h"
-#import "NSError+POSL.h"
-#import "NSException+POSL.h"
+#import <POSErrorHandling/POSErrorHandling.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -28,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
         [archiver finishEncoding];
         return [self saveData:data error:error];
     } @catch (NSException *exception) {
-        POSLAssignError(error, [NSError posl_systemErrorWithFormat:exception.reason]);
+        POSAssignError(error, [NSError pos_systemErrorWithFormat:exception.reason]);
         return NO;
     }
 }
@@ -41,11 +40,11 @@ NS_ASSUME_NONNULL_BEGIN
         }
         NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
         POSLensValue<NSCoding> *value = [unarchiver decodeObject];
-        POSL_CHECK([value conformsToProtocol:@protocol(POSLensPolicy)]);
-        POSL_CHECK([value conformsToProtocol:@protocol(NSCopying)]);
+        POS_CHECK([value conformsToProtocol:@protocol(POSLensPolicy)]);
+        POS_CHECK([value conformsToProtocol:@protocol(NSCopying)]);
         return value;
     } @catch (NSException *exception) {
-        POSLAssignError(error, [NSError posl_systemErrorWithFormat:exception.reason]);
+        POSAssignError(error, [NSError pos_systemErrorWithFormat:exception.reason]);
         return nil;
     }
 }
