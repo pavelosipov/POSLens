@@ -43,8 +43,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark -
 
-/// A contract for the persistable immutable objects.
+/// A contract for the immutable objects.
 typedef NSObject<POSLensPolicy, NSCopying> POSLensValue;
+
+/// A contract for the persistable immutable objects.
+typedef POSLensValue<NSCoding> POSLensPersistableValue;
 
 #pragma mark -
 
