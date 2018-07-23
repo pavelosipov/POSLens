@@ -47,6 +47,7 @@
 /* Begin PBXFileReference section */
 		49346F563F7CC2151EC48925 /* Pods-All-POSLensTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-POSLensTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-POSLensTests/Pods-All-POSLensTests.release.xcconfig"; sourceTree = "<group>"; };
 		512A80F08ACDFDDE6E094156 /* Pods-All-POSLensTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-POSLensTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-POSLensTests/Pods-All-POSLensTests.debug.xcconfig"; sourceTree = "<group>"; };
+		687A440D2105E792005360D5 /* POSEquality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POSEquality.h; sourceTree = "<group>"; };
 		6AEA76A0B29952A6419D42DC /* Pods-All-POSLens.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-POSLens.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-POSLens/Pods-All-POSLens.release.xcconfig"; sourceTree = "<group>"; };
 		A272422DE980795F30E24EAE /* libPods-All-POSLensTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-All-POSLensTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF9EB3A9C4C69E08650AFA4A /* libPods-All-POSLens.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-All-POSLens.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -97,6 +98,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		687A440C2105E792005360D5 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				687A440D2105E792005360D5 /* POSEquality.h */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		715ABD95741A5D38D63B63A4 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -143,6 +152,7 @@
 				E980C4A3203A0971002E1558 /* ErrorHandling */,
 				E980C4A8203A0971002E1558 /* Lens */,
 				E980C4AD203A0971002E1558 /* ValueStores */,
+				687A440C2105E792005360D5 /* Utils */,
 			);
 			path = Classes;
 			sourceTree = "<group>";

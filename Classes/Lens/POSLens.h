@@ -13,6 +13,7 @@
 #   import <ReactiveObjC/ReactiveObjC.h>
 #pragma clang diagnostic pop
 
+#import <POSErrorHandling/POSErrorHandling.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -78,8 +79,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (POSLens *)lensForKey:(NSString *)key defaultValue:(nullable POSLensValue *)defaultValue;
 
 // Hidden deadly initializers.
-- (instancetype)init NS_UNAVAILABLE;
-+ (instancetype)new NS_UNAVAILABLE;
+POS_INIT_UNAVAILABLE
 
 @end
 
