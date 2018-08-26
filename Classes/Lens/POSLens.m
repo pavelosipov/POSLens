@@ -131,6 +131,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - POSMutableLens
 
+- (BOOL)resetValue:(NSError **)error {
+    return [_parent resetValue:error];
+}
+
 - (BOOL)updateValueWithBlock:(POSLensValue * _Nullable(^)(POSLensValue * _Nullable, NSError **error))updateBlock
                        error:(NSError **)error {
     POS_CHECK(updateBlock);
@@ -210,26 +214,43 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - POSMutableLens
 
-- (BOOL)updateValueWithBlock:(POSLensValue *  _Nullable (^)(POSLensValue * _Nullable, NSError **error))updateBlock
+- (BOOL)resetValue:(NSError **)error {
+    __auto_type updateBlock = ^POSLensValue * _Nullable(POSLensValue * _Nullable value, BOOL *flush, NSError **error) {
+        *flush = NO;
+        return [self->_store loadValue:error];
+    };
+    return [self updateCurrentValueWithBlock:updateBlock error:error];
+}
+
+- (BOOL)updateValueWithBlock:(POSLensValue *  _Nullable (^)(POSLensValue * _Nullable, NSError **error))block
                        error:(NSError **)error {
+    __auto_type updateBlock = ^POSLensValue * _Nullable(POSLensValue * _Nullable value, BOOL *flush, NSError **error) {
+        return block(value, error);
+    };
+    return [self updateCurrentValueWithBlock:updateBlock error:error];
+}
+
+- (BOOL)updateCurrentValueWithBlock:(POSLensValue *  _Nullable (^)(POSLensValue * _Nullable, BOOL *flush, NSError **error))updateBlock
+                              error:(NSError **)error {
     POS_CHECK(updateBlock);
-    __block BOOL result = NO;
+    __block BOOL flush = YES;
+    __block BOOL updated = NO;
     __block NSError *updateError = nil;
     __block POSLensValue *updatedValue = _currentValue;
     dispatch_barrier_sync(_syncQueue, ^{
-        updatedValue = updateBlock(updatedValue, &updateError);
+        updatedValue = updateBlock(updatedValue, &flush, &updateError);
         if (updateError == nil && updatedValue != self->_currentValue && ![updatedValue isEqual:self->_currentValue]) {
-            result = [self->_store saveValue:updatedValue error:&updateError];
+            updated = flush ? [self->_store saveValue:updatedValue error:&updateError] : YES;
         }
-        if (result) {
+        if (updated) {
             self.currentValue = updatedValue;
         }
     });
     POSAssignError(error, updateError);
-    if (result) {
+    if (updated) {
         [_valueUpdatesSubject sendNext:updatedValue];
     }
-    return result;
+    return updateError == nil;
 }
 
 @end

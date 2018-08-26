@@ -117,6 +117,15 @@ POS_INIT_UNAVAILABLE
 - (POSMutableLens *)lensForKey:(NSString *)key defaultValue:(nullable POSLensValue *)defaultValue;
 
 ///
+/// @brief      Reloads underlying POSLenValue from value store.
+///
+/// @discussion Returns NO and `error` out parameter if value store is in trouble to load it.
+///
+/// @returns    YES if the value was successfully loaded from the store.
+///
+- (BOOL)resetValue:(NSError **)error;
+
+///
 /// @brief      Atomically updates underlying POSLenValue.
 ///
 /// @discussion The method returns NO and `error` out parameter in the following cases:

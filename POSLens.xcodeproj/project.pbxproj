@@ -226,6 +226,7 @@
 				E980C4832039ABD3002E1558 /* Sources */,
 				E980C4842039ABD3002E1558 /* Frameworks */,
 				E980C4852039ABD3002E1558 /* CopyFiles */,
+				588AD8885940923E1814C624 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -244,6 +245,7 @@
 				E980C493203A094C002E1558 /* Sources */,
 				E980C494203A094C002E1558 /* Frameworks */,
 				E980C495203A094C002E1558 /* Resources */,
+				5EE7F445D98998BA461B916A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -303,6 +305,42 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		588AD8885940923E1814C624 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-All-POSLens/Pods-All-POSLens-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/POSErrorHandling/POSErrorHandling-Resources.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/POSErrorHandling-Resources.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-All-POSLens/Pods-All-POSLens-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5EE7F445D98998BA461B916A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-All-POSLensTests/Pods-All-POSLensTests-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/POSErrorHandling/POSErrorHandling-Resources.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/POSErrorHandling-Resources.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-All-POSLensTests/Pods-All-POSLensTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		CF6F51D685C75435B6BE8A68 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

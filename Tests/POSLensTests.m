@@ -381,4 +381,34 @@
     XCTAssertEqualObjects(((POSPersonPrivacySettings *)settings.value[@"privacySettings"]).email, @"pavel@mail.ru");
 }
 
+- (void)testResetLensValue {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"expectation"];
+    id<POSValueStore> settingsStore = [[POSEphemeralValueStore alloc] initWithValue:
+        @{@"pavel":
+              @{@"name": @"Pavel",
+                @"age": @10,
+                @"privacySettings":[[POSPersonPrivacySettings alloc] initWithEmail:@"pavel@mail.ru" password:@"123"]}}];
+    POSMutableLens<NSDictionary *> *settings = [POSMutableLens
+                                                lensWithDefaultValue:@{}
+                                                store:settingsStore
+                                                error:nil];
+    POSLens<NSString *> *emailLens = settings[@"pavel"][@"privacySettings"][@"email"];
+    XCTAssertEqualObjects(emailLens.value, @"pavel@mail.ru");
+    [emailLens.valueUpdates subscribeNext:^(NSString *email) {
+        if ([email isEqualToString:@"pavel@bk.ru"]) {
+            [expectation fulfill];
+        }
+    }];
+    NSDictionary *newValue =
+        @{@"pavel":
+              @{@"name": @"Pavel Osipov",
+                @"age": @20,
+                @"privacySettings":[[POSPersonPrivacySettings alloc] initWithEmail:@"pavel@bk.ru" password:@"321"]}};
+    [settingsStore saveValue:newValue error:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [settings resetValue:nil];
+    });
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 @end
