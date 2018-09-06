@@ -269,8 +269,10 @@ NS_ASSUME_NONNULL_BEGIN
 + (nullable instancetype)lensWithDefaultValue:(nullable POSLensValue *)value
                                         store:(id<POSValueStore>)store
                                         error:(NSError **)error {
-    POSLensValue *currentValue = [store loadValue:error];
-    if (error != nil) {
+    NSError *loadError;
+    POSLensValue *currentValue = [store loadValue:&loadError];
+    if (loadError != nil) {
+        POSAssignError(error, loadError);
         return nil;
     }
     return [[POSRootLens alloc] initWithDefaultValue:value currentValue:currentValue store:store];
