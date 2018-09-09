@@ -79,9 +79,37 @@
        initWithEmail:@"pavel@mail.ru"
        password:@"123"]]];
     POSPersonSettings *personSettingsV1 = settings.value;
-    POSMutableLens<NSString *> *emailSettings = settings[@"privacySettings"][@"email"];
+    POSMutableLens<NSString *> *emailSettings = [settings lensForKeyPath:@keypath(settings.value, privacySettings.email)];
     XCTAssertEqualObjects(emailSettings.value, @"pavel@mail.ru");
     BOOL updated = [emailSettings updateValue:@"andrey@mail.ru" error:nil];
+    XCTAssertTrue(updated);
+    POSPersonSettings *personSettingsV2 = settings.value;
+    XCTAssertTrue(personSettingsV1 != personSettingsV2);
+    XCTAssertTrue(personSettingsV1.privacySettings != personSettingsV2.privacySettings);
+    XCTAssertEqualObjects(personSettingsV1.name, @"Pavel");
+    XCTAssertEqualObjects(personSettingsV2.name, @"Pavel");
+    XCTAssertTrue(personSettingsV1.age == 10);
+    XCTAssertTrue(personSettingsV2.age == 10);
+    XCTAssertEqualObjects(personSettingsV1.privacySettings.password, @"123");
+    XCTAssertEqualObjects(personSettingsV2.privacySettings.password, @"123");
+    XCTAssertEqualObjects(personSettingsV1.privacySettings.email, @"pavel@mail.ru");
+    XCTAssertEqualObjects(personSettingsV2.privacySettings.email, @"andrey@mail.ru");
+}
+
+- (void)testObjectPropertyUpdateAtKeyPath {
+    POSMutableLens<POSPersonSettings *> *settings =
+    [POSMutableLens lensWithValue:
+     [[POSPersonSettings alloc]
+      initWithName:@"Pavel"
+      age:10
+      privacySettings:
+      [[POSPersonPrivacySettings alloc]
+       initWithEmail:@"pavel@mail.ru"
+       password:@"123"]]];
+    POSPersonSettings *personSettingsV1 = settings.value;
+    BOOL updated = [settings updateValue:@"andrey@mail.ru"
+                               atKeyPath:@keypath(settings.value, privacySettings.email)
+                                   error:nil];
     XCTAssertTrue(updated);
     POSPersonSettings *personSettingsV2 = settings.value;
     XCTAssertTrue(personSettingsV1 != personSettingsV2);

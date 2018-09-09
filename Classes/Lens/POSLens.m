@@ -17,6 +17,19 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@interface POSPropertyLens : POSMutableLens
+
+@property (nonatomic, readonly) POSMutableLens<POSLensValue *> *parent;
+@property (nonatomic, readonly) NSString *key;
+
+- (instancetype)initWithParent:(POSMutableLens<POSLensValue *> *)parent
+                  defaultValue:(nullable POSLensValue *)defaultValue
+                           key:(NSString *)key NS_DESIGNATED_INITIALIZER;
+
+@end
+
+#pragma mark -
+
 @interface POSLens ()
 @property (nonatomic, readonly) NSString *keyPath;
 @property (nonatomic, readonly, nullable) POSLensValue *defaultValue;
@@ -63,6 +76,21 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation POSMutableLens
 @dynamic recursiveValueUpdates;
 
+- (POSMutableLens *)lensForKey:(NSString *)key defaultValue:(nullable POSLensValue *)defaultValue {
+    POS_CHECK(key);
+    return [[POSPropertyLens alloc] initWithParent:self defaultValue:defaultValue key:key];
+}
+
+- (instancetype)lensForKeyPath:(NSString *)keyPath {
+    POS_CHECK(keyPath);
+    POSMutableLens *lens = self;
+    NSArray<NSString *> *keys = [keyPath componentsSeparatedByString:@"."];
+    for (NSInteger i = 0, n = keys.count; i < n; ++i) {
+        lens = [[POSPropertyLens alloc] initWithParent:lens defaultValue:nil key:keys[i]];
+    }
+    return lens;
+}
+
 - (BOOL)updateValue:(nullable id)value error:(NSError **)error {
     return [self updateValueWithBlock:^id _Nullable(id  _Nullable currentValue, NSError **error) {
         return value;
@@ -80,11 +108,6 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma clang diagnostic pop
 
 #pragma mark -
-
-@interface POSPropertyLens : POSMutableLens
-@property (nonatomic, readonly) POSMutableLens<POSLensValue *> *parent;
-@property (nonatomic, readonly) NSString *key;
-@end
 
 @implementation POSPropertyLens
 
@@ -118,11 +141,6 @@ NS_ASSUME_NONNULL_BEGIN
         id value = [parentValue pos_valueForKey:key];
         return value ?: defaultValue;
     }];
-}
-
-- (instancetype)lensForKey:(NSString *)key defaultValue:(nullable POSLensValue *)defaultValue {
-    POS_CHECK(key);
-    return [[POSPropertyLens alloc] initWithParent:self defaultValue:defaultValue key:key];
 }
 
 - (NSString *)keyPath {
@@ -203,11 +221,6 @@ NS_ASSUME_NONNULL_BEGIN
     return [_valueUpdatesSubject startWith:_currentValue];
 }
 
-- (__kindof POSLens *)lensForKey:(NSString *)key defaultValue:(nullable POSLensValue *)defaultValue {
-    POS_CHECK(key);
-    return [[POSPropertyLens alloc] initWithParent:self defaultValue:defaultValue key:key];
-}
-
 - (NSString *)keyPath {
     return @"root";
 }
@@ -228,6 +241,26 @@ NS_ASSUME_NONNULL_BEGIN
         return block(value, error);
     };
     return [self updateCurrentValueWithBlock:updateBlock error:error];
+}
+
+- (BOOL)updateValue:(nullable POSLensValue *)value atKey:(NSString *)key error:(NSError **)error {
+    return [[self lensForKey:key] updateValue:value error:error];
+}
+
+- (BOOL)updateValue:(nullable POSLensValue *)value atKeyPath:(NSString *)keyPath error:(NSError **)error {
+    return [[self lensForKeyPath:keyPath] updateValue:value error:error];
+}
+
+- (BOOL)updateValueAtKey:(NSString *)key
+               withBlock:(POSLensValue * _Nullable (^)(POSLensValue * _Nullable, NSError **))block
+                   error:(NSError **)error {
+    return [[self lensForKey:key] updateValueWithBlock:block error:error];
+}
+
+- (BOOL)updateValueAtKeyPath:(NSString *)key
+                   withBlock:(POSLensValue * _Nullable (^)(POSLensValue * _Nullable, NSError **))block
+                       error:(NSError **)error {
+    return [[self lensForKeyPath:key] updateValueWithBlock:block error:error];
 }
 
 - (BOOL)updateCurrentValueWithBlock:(POSLensValue *  _Nullable (^)(POSLensValue * _Nullable, BOOL *flush, NSError **error))updateBlock

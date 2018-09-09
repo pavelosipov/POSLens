@@ -78,7 +78,14 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 - (POSLens *)lensForKey:(NSString *)key defaultValue:(nullable POSLensValue *)defaultValue;
 
-// Hidden deadly initializers.
+///
+/// @brief      Method for retrieving lens with specified keypath.
+///
+/// @remarks    Use that method only if there is no default value for accessing object's property,
+///             or you are not going to modify its subgraph.
+///
+- (POSLens *)lensForKeyPath:(NSString *)keyPath;
+
 POS_INIT_UNAVAILABLE
 
 @end
@@ -109,6 +116,14 @@ POS_INIT_UNAVAILABLE
 - (POSMutableLens *)lensForKey:(NSString *)key;
 
 ///
+/// @brief      Method for retrieving lens with specified keypath.
+///
+/// @remarks    Use that method only if there is no default value for accessing object's property,
+///             or you are not going to modify its subgraph.
+///
+- (POSMutableLens *)lensForKeyPath:(NSString *)keyPath;
+
+///
 /// @brief      Method for retrieving lens with default value specification.
 ///
 /// @discussion Lens object would insert the default value into the underlying object only
@@ -137,6 +152,28 @@ POS_INIT_UNAVAILABLE
 - (BOOL)updateValue:(nullable ValueType)value error:(NSError **)error;
 
 ///
+/// @brief      Atomically updates underlying property with specified key.
+///
+/// @discussion The method returns NO and `error` out parameter in the following cases:
+///             (a) there are neither parent object or the default value for it,
+///             (b) underlying value store is in trouble to persist it.
+///
+/// @returns    YES if the value was successfully persisted in the store.
+///
+- (BOOL)updateValue:(nullable POSLensValue *)value atKey:(NSString *)key error:(NSError **)error;
+
+///
+/// @brief      Atomically updates underlying property with specified keypath.
+///
+/// @discussion The method returns NO and `error` out parameter in the following cases:
+///             (a) there are neither parent object or the default value for it,
+///             (b) underlying value store is in trouble to persist it.
+///
+/// @returns    YES if the value was successfully persisted in the store.
+///
+- (BOOL)updateValue:(nullable POSLensValue *)value atKeyPath:(NSString *)keyPath error:(NSError **)error;
+
+///
 /// @brief      Atomically replaces underlying POSLensValue with a new instance created by
 ///             the thread-safe updateBlock.
 ///
@@ -154,6 +191,48 @@ POS_INIT_UNAVAILABLE
 /// @returns    YES if the value was successfully persisted in the store.
 ///
 - (BOOL)updateValueWithBlock:(ValueType _Nullable (^)(ValueType _Nullable currentValue, NSError **error))updateBlock
+                       error:(NSError **)error;
+
+///
+/// @brief      Atomically property with specified key with a new instance created by
+///             the thread-safe updateBlock.
+///
+/// @discussion Update block provides current value as an input parameter for exclusive modification.
+///             Other value clients cannot read and modify it until block execution is in progress.
+///             This statement is true even if those clients use independent instances of the POSLens
+///             objects to manage the underlying value at the same path in the object's graph.
+///
+///             The most straightforward use-case for that method is incrementing some counter in a thread-safe manner.
+///
+///             The method returns NO and `error` out parameter in the following cases:
+///             (a) there are neither parent object or the default value for it,
+///             (b) underlying value store is in trouble to persist it.
+///
+/// @returns    YES if the value was successfully persisted in the store.
+///
+- (BOOL)updateValueAtKey:(NSString *)key
+               withBlock:(POSLensValue * _Nullable (^)(POSLensValue * _Nullable currentValue, NSError **error))block
+                   error:(NSError **)error;
+
+///
+/// @brief      Atomically property with specified keypath with a new instance created by
+///             the thread-safe updateBlock.
+///
+/// @discussion Update block provides current value as an input parameter for exclusive modification.
+///             Other value clients cannot read and modify it until block execution is in progress.
+///             This statement is true even if those clients use independent instances of the POSLens
+///             objects to manage the underlying value at the same path in the object's graph.
+///
+///             The most straightforward use-case for that method is incrementing some counter in a thread-safe manner.
+///
+///             The method returns NO and `error` out parameter in the following cases:
+///             (a) there are neither parent object or the default value for it,
+///             (b) underlying value store is in trouble to persist it.
+///
+/// @returns    YES if the value was successfully persisted in the store.
+///
+- (BOOL)updateValueAtKeyPath:(NSString *)keyPath
+                   withBlock:(POSLensValue * _Nullable (^)(POSLensValue * _Nullable currentValue, NSError **error))block
                        error:(NSError **)error;
 
 ///
