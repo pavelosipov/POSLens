@@ -218,7 +218,9 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (RACSignal<POSLensValue *> *)recursiveValueUpdates {
-    return [_valueUpdatesSubject startWith:_currentValue];
+    return [[_valueUpdatesSubject
+        takeUntil:self.rac_willDeallocSignal]
+        startWith:_currentValue];
 }
 
 - (NSString *)keyPath {
