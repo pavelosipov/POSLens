@@ -97,6 +97,26 @@ NS_ASSUME_NONNULL_BEGIN
     } error:error];
 }
 
+- (BOOL)updateValue:(nullable POSLensValue *)value atKey:(NSString *)key error:(NSError **)error {
+    return [[self lensForKey:key] updateValue:value error:error];
+}
+
+- (BOOL)updateValue:(nullable POSLensValue *)value atKeyPath:(NSString *)keyPath error:(NSError **)error {
+    return [[self lensForKeyPath:keyPath] updateValue:value error:error];
+}
+
+- (BOOL)updateValueAtKey:(NSString *)key
+               withBlock:(POSLensValue * _Nullable (^)(POSLensValue * _Nullable, NSError **))block
+                   error:(NSError **)error {
+    return [[self lensForKey:key] updateValueWithBlock:block error:error];
+}
+
+- (BOOL)updateValueAtKeyPath:(NSString *)key
+                   withBlock:(POSLensValue * _Nullable (^)(POSLensValue * _Nullable, NSError **))block
+                       error:(NSError **)error {
+    return [[self lensForKeyPath:key] updateValueWithBlock:block error:error];
+}
+
 - (BOOL)removeValue:(NSError **)error {
     return [self updateValueWithBlock:^id _Nullable(id  _Nullable currentValue, NSError **error) {
         return nil;
@@ -243,26 +263,6 @@ NS_ASSUME_NONNULL_BEGIN
         return block(value, error);
     };
     return [self updateCurrentValueWithBlock:updateBlock error:error];
-}
-
-- (BOOL)updateValue:(nullable POSLensValue *)value atKey:(NSString *)key error:(NSError **)error {
-    return [[self lensForKey:key] updateValue:value error:error];
-}
-
-- (BOOL)updateValue:(nullable POSLensValue *)value atKeyPath:(NSString *)keyPath error:(NSError **)error {
-    return [[self lensForKeyPath:keyPath] updateValue:value error:error];
-}
-
-- (BOOL)updateValueAtKey:(NSString *)key
-               withBlock:(POSLensValue * _Nullable (^)(POSLensValue * _Nullable, NSError **))block
-                   error:(NSError **)error {
-    return [[self lensForKey:key] updateValueWithBlock:block error:error];
-}
-
-- (BOOL)updateValueAtKeyPath:(NSString *)key
-                   withBlock:(POSLensValue * _Nullable (^)(POSLensValue * _Nullable, NSError **))block
-                       error:(NSError **)error {
-    return [[self lensForKeyPath:key] updateValueWithBlock:block error:error];
 }
 
 - (BOOL)updateCurrentValueWithBlock:(POSLensValue *  _Nullable (^)(POSLensValue * _Nullable, BOOL *flush, NSError **error))updateBlock
