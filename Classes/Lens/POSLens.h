@@ -236,6 +236,11 @@ POS_INIT_UNAVAILABLE
                        error:(NSError **)error;
 
 ///
+/// @brief      Shortcut for updateValue:atKeyPath:error:
+///
+- (void)setObject:(POSLensValue *)value forKeyedSubscript:(NSString *)keyPath;
+
+///
 /// @brief      Removes the value from the store.
 ///
 /// @discussion Clients will receive the default value for that setting or nil if the default value doesn't exist.
@@ -319,5 +324,13 @@ POS_INIT_UNAVAILABLE
                                         error:(NSError **)error;
 
 @end
+
+#pragma mark - Shortcuts
+
+#define POS_SET(LENS, KEYPATH) \
+    LENS[@keypath(LENS.value, KEYPATH)]
+
+#define POS_GET(LENS, KEYPATH) \
+    LENS[@keypath(LENS.value, KEYPATH)].value
 
 NS_ASSUME_NONNULL_END

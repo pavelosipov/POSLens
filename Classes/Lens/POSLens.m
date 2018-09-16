@@ -117,6 +117,15 @@ NS_ASSUME_NONNULL_BEGIN
     return [[self lensForKeyPath:key] updateValueWithBlock:block error:error];
 }
 
+- (void)setObject:(POSLensValue *)value forKeyedSubscript:(NSString *)keyPath {
+    NSError *error;
+    BOOL updated = [[self lensForKeyPath:keyPath] updateValue:value error:&error];
+    NSParameterAssert(updated);
+    if (!updated) {
+        NSLog(@"%@: Failed to update value %@: %@", self, keyPath, error);
+    }
+}
+
 - (BOOL)removeValue:(NSError **)error {
     return [self updateValueWithBlock:^id _Nullable(id  _Nullable currentValue, NSError **error) {
         return nil;

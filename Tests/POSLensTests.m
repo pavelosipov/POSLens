@@ -124,6 +124,20 @@
     XCTAssertEqualObjects(personSettingsV2.privacySettings.email, @"andrey@mail.ru");
 }
 
+- (void)testObjectPropertyUpdateAtKeyPathWithMacros {
+    POSMutableLens<POSPersonSettings *> *settings =
+    [POSMutableLens lensWithValue:
+     [[POSPersonSettings alloc]
+      initWithName:@"Pavel"
+      age:10
+      privacySettings:
+      [[POSPersonPrivacySettings alloc]
+       initWithEmail:@"pavel@mail.ru"
+       password:@"123"]]];
+    POS_SET(settings, privacySettings.email) = @"andrey@mail.ru";
+    XCTAssertEqualObjects(POS_GET(settings, privacySettings.email), @"andrey@mail.ru");
+}
+
 - (void)testDictionaryPropertyUpdate {
     POSMutableLens<NSDictionary *> *settings =
     [POSMutableLens lensWithValue:
