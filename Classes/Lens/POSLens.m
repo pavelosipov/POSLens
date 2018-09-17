@@ -48,6 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 @implementation POSLens
+
 @dynamic keyPath;
 @dynamic value;
 @dynamic valueUpdates;
@@ -117,7 +118,7 @@ NS_ASSUME_NONNULL_BEGIN
     return [[self lensForKeyPath:key] updateValueWithBlock:block error:error];
 }
 
-- (void)setObject:(POSLensValue *)value forKeyedSubscript:(NSString *)keyPath {
+- (void)setObject:(nullable POSLensValue *)value forKeyedSubscript:(NSString *)keyPath {
     NSError *error;
     BOOL updated = [[self lensForKeyPath:keyPath] updateValue:value error:&error];
     NSParameterAssert(updated);
@@ -145,7 +146,7 @@ NS_ASSUME_NONNULL_BEGIN
                            key:(NSString *)key {
     POS_CHECK(parent);
     POS_CHECK(key);
-    if (self = [super initWithDefaultValue:defaultValue]) {
+    if (self = [super initWithDefaultValue:(defaultValue ?: [parent.defaultValue pos_valueForKey:key])]) {
         _parent = parent;
         _key = [key copy];
     }

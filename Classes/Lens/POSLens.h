@@ -238,7 +238,7 @@ POS_INIT_UNAVAILABLE
 ///
 /// @brief      Shortcut for updateValue:atKeyPath:error:
 ///
-- (void)setObject:(POSLensValue *)value forKeyedSubscript:(NSString *)keyPath;
+- (void)setObject:(nullable POSLensValue *)value forKeyedSubscript:(NSString *)keyPath;
 
 ///
 /// @brief      Removes the value from the store.
