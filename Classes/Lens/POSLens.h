@@ -190,7 +190,7 @@ POS_INIT_UNAVAILABLE
 ///
 /// @returns    YES if the value was successfully persisted in the store.
 ///
-- (BOOL)updateValueWithBlock:(ValueType _Nullable (^)(ValueType _Nullable currentValue, NSError **error))updateBlock
+- (BOOL)updateValueWithBlock:(ValueType _Nullable (^)(ValueType _Nullable oldValue, NSError **error))updateBlock
                        error:(NSError **)error;
 
 ///
@@ -211,7 +211,7 @@ POS_INIT_UNAVAILABLE
 /// @returns    YES if the value was successfully persisted in the store.
 ///
 - (BOOL)updateValueAtKey:(NSString *)key
-               withBlock:(POSLensValue * _Nullable (^)(POSLensValue * _Nullable currentValue, NSError **error))block
+               withBlock:(POSLensValue * _Nullable (^)(__kindof POSLensValue * _Nullable oldValue, NSError **error))block
                    error:(NSError **)error;
 
 ///
@@ -232,7 +232,7 @@ POS_INIT_UNAVAILABLE
 /// @returns    YES if the value was successfully persisted in the store.
 ///
 - (BOOL)updateValueAtKeyPath:(NSString *)keyPath
-                   withBlock:(POSLensValue * _Nullable (^)(POSLensValue * _Nullable currentValue, NSError **error))block
+                   withBlock:(POSLensValue * _Nullable (^)(__kindof POSLensValue * _Nullable oldValue, NSError **error))block
                        error:(NSError **)error;
 
 ///

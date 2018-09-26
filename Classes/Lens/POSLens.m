@@ -107,13 +107,13 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (BOOL)updateValueAtKey:(NSString *)key
-               withBlock:(POSLensValue * _Nullable (^)(POSLensValue * _Nullable, NSError **))block
+               withBlock:(POSLensValue * _Nullable (^)(__kindof POSLensValue * _Nullable, NSError **))block
                    error:(NSError **)error {
     return [[self lensForKey:key] updateValueWithBlock:block error:error];
 }
 
 - (BOOL)updateValueAtKeyPath:(NSString *)key
-                   withBlock:(POSLensValue * _Nullable (^)(POSLensValue * _Nullable, NSError **))block
+                   withBlock:(POSLensValue * _Nullable (^)(__kindof POSLensValue * _Nullable, NSError **))block
                        error:(NSError **)error {
     return [[self lensForKeyPath:key] updateValueWithBlock:block error:error];
 }
