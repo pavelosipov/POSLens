@@ -79,7 +79,7 @@
        initWithEmail:@"pavel@mail.ru"
        password:@"123"]]];
     POSPersonSettings *personSettingsV1 = settings.value;
-    POSMutableLens<NSString *> *emailSettings = [settings lensForKeyPath:@keypath(settings.value, privacySettings.email)];
+    POSMutableLens<NSString *> *emailSettings = POS_LENS(settings, privacySettings.email);
     XCTAssertEqualObjects(emailSettings.value, @"pavel@mail.ru");
     BOOL updated = [emailSettings updateValue:@"andrey@mail.ru" error:nil];
     XCTAssertTrue(updated);
@@ -107,10 +107,7 @@
        initWithEmail:@"pavel@mail.ru"
        password:@"123"]]];
     POSPersonSettings *personSettingsV1 = settings.value;
-    BOOL updated = [settings updateValue:@"andrey@mail.ru"
-                               atKeyPath:@keypath(settings.value, privacySettings.email)
-                                   error:nil];
-    XCTAssertTrue(updated);
+    POS_SET_VALUE(settings, privacySettings.email) = @"andrey@mail.ru";
     POSPersonSettings *personSettingsV2 = settings.value;
     XCTAssertTrue(personSettingsV1 != personSettingsV2);
     XCTAssertTrue(personSettingsV1.privacySettings != personSettingsV2.privacySettings);
@@ -134,8 +131,8 @@
       [[POSPersonPrivacySettings alloc]
        initWithEmail:@"pavel@mail.ru"
        password:@"123"]]];
-    POS_SET(settings, privacySettings.email) = @"andrey@mail.ru";
-    XCTAssertEqualObjects(POS_GET(settings, privacySettings.email), @"andrey@mail.ru");
+    POS_SET_VALUE(settings, privacySettings.email) = @"andrey@mail.ru";
+    XCTAssertEqualObjects(POS_VALUE(settings, privacySettings.email), @"andrey@mail.ru");
 }
 
 - (void)testDictionaryPropertyUpdate {

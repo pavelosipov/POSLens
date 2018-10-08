@@ -327,10 +327,25 @@ POS_INIT_UNAVAILABLE
 
 #pragma mark - Shortcuts
 
-#define POS_SET(LENS, KEYPATH) \
-    LENS[@keypath(LENS.value, KEYPATH)]
+//
+// Property-safe way to extract sublens from the lens:
+// @code POSLens<NSString *> *email = POS_LENS(userLens, email); @endcode
+//
+#define POS_LENS(LENS, KEYPATH) \
+    [LENS lensForKeyPath:@keypath(LENS.value, KEYPATH)]
 
-#define POS_GET(LENS, KEYPATH) \
-    LENS[@keypath(LENS.value, KEYPATH)].value
+//
+// Property-safe way to update value using the lens:
+// @code NSString *email = POS_VALUE(userLens, email); @endcode
+//
+#define POS_VALUE(LENS, KEYPATH) \
+    POS_LENS(LENS, KEYPATH).value
+
+//
+// Property-safe way to update value using the lens:
+// @code POS_SET_VALUE(userLens, email) = @"inbox@example.com"; @endcode
+//
+#define POS_SET_VALUE(LENS, KEYPATH) \
+    LENS[@keypath(LENS.value, KEYPATH)]
 
 NS_ASSUME_NONNULL_END
