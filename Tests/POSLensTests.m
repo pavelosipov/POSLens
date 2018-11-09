@@ -321,6 +321,82 @@
     XCTAssertEqualObjects(updateNotesCounters[@"pavelEmailSettings"], @1);
 }
 
+- (void)testExistingLensHistoricalValueUpdateNotifications {
+    POSMutableLens<NSDictionary *> *settings =
+    [POSMutableLens lensWithValue:
+     @{@"pavel@mail.ru": @{@"name": @"Pavel",
+                           @"age": @10,
+                           @"privacySettings":[[POSPersonPrivacySettings alloc]
+                                               initWithEmail:@"pavel@mail.ru"
+                                               password:@"123"]},
+       @"andrey@mail.ru": @{@"name": @"Andrey",
+                            @"age": @20,
+                            @"privacySettings":[[POSPersonPrivacySettings alloc]
+                                                initWithEmail:@"andrey@mail.ru"
+                                                password:@"321"]}
+       }];
+    NSMutableDictionary *updateNotesCounters = [NSMutableDictionary new];
+    __auto_type incrementUpdateCounter = ^void(NSString *name) {
+        NSNumber *counter = updateNotesCounters[name];
+        updateNotesCounters[name] = @(counter.integerValue + 1);
+    };
+    
+    [settings.historicalValueUpdates subscribeNext:^(id _) {
+        incrementUpdateCounter(@"root");
+    }];
+    POSMutableLens<NSDictionary *> *andreySettings = settings[@"andrey@mail.ru"];
+    [andreySettings.historicalValueUpdates subscribeNext:^(id _) {
+        incrementUpdateCounter(@"andreySettings");
+    }];
+    
+    POSMutableLens<POSPersonPrivacySettings *> *andreyPrivacySettings = andreySettings[@"privacySettings"];
+    [andreyPrivacySettings.historicalValueUpdates subscribeNext:^(id _) {
+        incrementUpdateCounter(@"andreyPrivacySettings");
+    }];
+
+    POSLens<NSString *> *andreyPasswordSettings = andreySettings[@"password"];
+    [andreyPasswordSettings.historicalValueUpdates subscribeNext:^(id _) {
+        incrementUpdateCounter(@"andreyPasswordSettings");
+    }];
+    
+    POSMutableLens<NSString *> *andreyEmailSettings = andreyPrivacySettings[@"email"];
+    __block NSString *expectedAndreyEmail = @"andrey@mail.ru";
+    [andreyEmailSettings.historicalValueUpdates subscribeNext:^(POSLensValueUpdate<NSString *> *update) {
+        XCTAssertEqualObjects(expectedAndreyEmail, update.actualValue);
+        incrementUpdateCounter(@"andreyEmailSettings");
+    }];
+
+    POSLens<NSDictionary *> *pavelSettings = settings[@"pavel@mail.ru"];
+    [pavelSettings.historicalValueUpdates subscribeNext:^(POSLensValueUpdate<POSLensValue *> *update) {
+        incrementUpdateCounter(@"pavelSettings");
+    }];
+
+    POSLens<POSPersonPrivacySettings *> *pavelPrivacySettings = pavelSettings[@"privacySettings"];
+    [pavelPrivacySettings.historicalValueUpdates subscribeNext:^(id _) {
+        incrementUpdateCounter(@"pavelPrivacySettings");
+    }];
+    
+    POSLens<NSString *> *pavelEmailSettings = pavelPrivacySettings[@"email"];
+    [pavelEmailSettings.historicalValueUpdates subscribeNext:^(id _) {
+        incrementUpdateCounter(@"pavelEmailSettings");
+    }];
+
+    expectedAndreyEmail = @"andrey@list.ru";
+    [andreyEmailSettings updateValue:@"andrey@list.ru" error:nil];
+    expectedAndreyEmail = @"andrey@bk.ru";
+    [andreyEmailSettings updateValue:@"andrey@bk.ru" error:nil];
+    [andreyEmailSettings updateValue:@"andrey@bk.ru" error:nil];
+    
+    XCTAssertEqualObjects(updateNotesCounters[@"root"], @2);
+    XCTAssertEqualObjects(updateNotesCounters[@"andreySettings"], @2);
+    XCTAssertEqualObjects(updateNotesCounters[@"andreyPrivacySettings"], @2);
+    XCTAssertEqualObjects(updateNotesCounters[@"andreyEmailSettings"], @2);
+    XCTAssertNil(updateNotesCounters[@"andreyPasswordSettings"]);
+    XCTAssertNil(updateNotesCounters[@"pavelSettings"]);
+    XCTAssertNil(updateNotesCounters[@"pavelPrivacySettings"]);
+    XCTAssertNil(updateNotesCounters[@"pavelEmailSettings"]);
+}
+
 - (void)testLensValueAdditionNotification {
     XCTestExpectation *expectation = [self expectationWithDescription:@"expectation"];
     POSMutableLens<NSDictionary *> *settings =

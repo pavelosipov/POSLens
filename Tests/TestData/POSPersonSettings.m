@@ -38,6 +38,16 @@ NS_ASSUME_NONNULL_BEGIN
     return [[self.class alloc] initWithEmail:_email password:_password];
 }
 
+- (BOOL)isEqual:(nullable POSPersonPrivacySettings *)other {
+    if (self == other) {
+        return YES;
+    }
+    if (![other isMemberOfClass:self.class]) {
+        return NO;
+    }
+    return POSObjectsAreEqual(_email, other.email) && POSObjectsAreEqual(_password, other.password);
+}
+
 @end
 
 #pragma mark -
@@ -72,6 +82,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)copyWithZone:(nullable NSZone *)zone {
     return [[self.class alloc] initWithName:_name age:_age privacySettings:_privacySettings];
+}
+
+- (BOOL)isEqual:(nullable POSPersonSettings *)other {
+    if (self == other) {
+        return YES;
+    }
+    if (![other isMemberOfClass:self.class]) {
+        return NO;
+    }
+    return (POSStringsAreEqual(_name, other.name) &&
+            _age == other.age &&
+            POSObjectsAreEqual(_privacySettings, other.privacySettings));
 }
 
 @end

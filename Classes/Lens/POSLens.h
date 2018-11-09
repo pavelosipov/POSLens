@@ -18,6 +18,18 @@
 NS_ASSUME_NONNULL_BEGIN
 
 ///
+/// Information object with state of performed update.
+///
+@interface POSLensValueUpdate<__covariant ValueType:POSLensValue *> : NSObject
+
+@property (nonatomic, readonly, nullable) ValueType oldValue;
+@property (nonatomic, readonly, nullable) ValueType actualValue;
+
+POS_INIT_UNAVAILABLE
+
+@end
+
+///
 /// Provides read-only access for some part of the object.
 ///
 @interface POSLens<__covariant ValueType:POSLensValue *> : NSObject
@@ -49,6 +61,13 @@ NS_ASSUME_NONNULL_BEGIN
 /// @remarks    Signal emits actual POSLensValue on subscription.
 ///
 ///             Signal emits values on the updating thread.
+///
+@property (nonatomic, readonly) RACSignal<POSLensValueUpdate<ValueType> *> *historicalValueUpdates;
+
+///
+/// @brief      Signal which emits actual values.
+///
+/// @discussion Signal emits values at the same time as historicalValueUpdates does, but contains only new values.
 ///
 @property (nonatomic, readonly) RACSignal<ValueType> *valueUpdates;
 

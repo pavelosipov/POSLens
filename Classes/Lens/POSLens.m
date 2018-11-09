@@ -17,6 +17,32 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@implementation POSLensValueUpdate
+
+- (instancetype)initWithOldValue:(nullable POSLensValue *)oldValue
+                     actualValue:(nullable POSLensValue *)actualValue {
+    if (self = [super init]) {
+        _oldValue = oldValue;
+        _actualValue = actualValue;
+    }
+    return self;
+}
+
+- (BOOL)isEqual:(nullable POSLensValueUpdate *)other {
+    if (self == other) {
+        return YES;
+    }
+    if (![other isMemberOfClass:self.class]) {
+        return NO;
+    }
+    return (POSObjectsAreEqual(_oldValue, other.oldValue) &&
+            POSObjectsAreEqual(_actualValue, other.actualValue));
+}
+
+@end
+
+#pragma mark -
+
 @interface POSPropertyLens : POSMutableLens
 
 @property (nonatomic, readonly) POSMutableLens<POSLensValue *> *parent;
@@ -36,7 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface POSMutableLens ()
-@property (nonatomic, readonly) RACSignal<POSLensValue *> *recursiveValueUpdates;
+@property (nonatomic, readonly) RACSignal<POSLensValueUpdate<POSLensValue *> *> *recursiveValueUpdates;
 @end
 
 //
@@ -90,6 +116,22 @@ NS_ASSUME_NONNULL_BEGIN
         lens = [[POSPropertyLens alloc] initWithParent:lens defaultValue:nil key:keys[i]];
     }
     return lens;
+}
+
+- (RACSignal<POSLensValue *> *)valueUpdates {
+    return [[self.recursiveValueUpdates
+        map:^POSLensValue * _Nullable(POSLensValueUpdate<POSLensValue *> *update) {
+            return update.actualValue;
+        }]
+        distinctUntilChanged];
+}
+
+- (RACSignal<POSLensValueUpdate<POSLensValue *> *> *)historicalValueUpdates {
+    return [[self.recursiveValueUpdates
+        skip:1]
+        filter:^BOOL(POSLensValueUpdate<POSLensValue *> *update) {
+            return !POSObjectsAreEqual(update.actualValue, update.oldValue);
+        }];
 }
 
 - (BOOL)updateValue:(nullable id)value error:(NSError **)error {
@@ -160,16 +202,13 @@ NS_ASSUME_NONNULL_BEGIN
     return value ?: self.defaultValue;
 }
 
-- (RACSignal *)valueUpdates {
-    return [self.recursiveValueUpdates distinctUntilChanged];
-}
-
-- (RACSignal<POSLensValue *> *)recursiveValueUpdates {
+- (RACSignal<POSLensValueUpdate<POSLensValue *> *> *)recursiveValueUpdates {
     NSString *key = _key;
     POSLensValue *defaultValue = self.defaultValue;
-    return [_parent.recursiveValueUpdates map:^id _Nullable(POSLensValue * _Nullable parentValue) {
-        id value = [parentValue pos_valueForKey:key];
-        return value ?: defaultValue;
+    return [_parent.recursiveValueUpdates map:^id _Nullable(POSLensValueUpdate * _Nullable parentUpdate) {
+        id oldValue = [parentUpdate.oldValue pos_valueForKey:key] ?: defaultValue;;
+        id actualValue = [parentUpdate.actualValue pos_valueForKey:key] ?: defaultValue;
+        return [[POSLensValueUpdate alloc] initWithOldValue:oldValue actualValue:actualValue];
     }];
 }
 
@@ -215,7 +254,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) dispatch_queue_t syncQueue;
 @property (nonatomic, readonly) id<POSValueStore> store;
 @property (nonatomic, nullable) POSLensValue *currentValue;
-@property (nonatomic, readonly) RACSubject<POSLensValue *> *valueUpdatesSubject;
+@property (nonatomic, readonly) RACSubject<POSLensValueUpdate<POSLensValue *> *> *updatesSubject;
 @end
 
 @implementation POSRootLens
@@ -228,7 +267,7 @@ NS_ASSUME_NONNULL_BEGIN
         _syncQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         _store = store;
         _currentValue = currentValue;
-        _valueUpdatesSubject = [RACSubject subject];
+        _updatesSubject = [RACSubject subject];
     }
     return self;
 }
@@ -243,14 +282,10 @@ NS_ASSUME_NONNULL_BEGIN
     return value;
 }
 
-- (RACSignal *)valueUpdates {
-    return [self.recursiveValueUpdates distinctUntilChanged];
-}
-
-- (RACSignal<POSLensValue *> *)recursiveValueUpdates {
-    return [[_valueUpdatesSubject
+- (RACSignal<POSLensValueUpdate<POSLensValue *> *> *)recursiveValueUpdates {
+    return [[_updatesSubject
         takeUntil:self.rac_willDeallocSignal]
-        startWith:_currentValue];
+        startWith:[[POSLensValueUpdate alloc] initWithOldValue:nil actualValue:_currentValue]];
 }
 
 - (NSString *)keyPath {
@@ -281,10 +316,12 @@ NS_ASSUME_NONNULL_BEGIN
     __block BOOL flush = YES;
     __block BOOL updated = NO;
     __block NSError *updateError = nil;
-    __block POSLensValue *updatedValue = _currentValue;
+    __block POSLensValue *updatingValue;
+    __block POSLensValue *updatedValue;
     dispatch_barrier_sync(_syncQueue, ^{
-        updatedValue = updateBlock(updatedValue, &flush, &updateError);
-        if (updateError == nil && updatedValue != self->_currentValue && ![updatedValue isEqual:self->_currentValue]) {
+        updatingValue = self->_currentValue;
+        updatedValue = updateBlock(updatingValue, &flush, &updateError);
+        if (updateError == nil && updatedValue != updatingValue && ![updatedValue isEqual:updatingValue]) {
             updated = flush ? [self->_store saveValue:updatedValue error:&updateError] : YES;
         }
         if (updated) {
@@ -293,7 +330,7 @@ NS_ASSUME_NONNULL_BEGIN
     });
     POSAssignError(error, updateError);
     if (updated) {
-        [_valueUpdatesSubject sendNext:updatedValue];
+        [_updatesSubject sendNext:[[POSLensValueUpdate alloc] initWithOldValue:updatingValue actualValue:updatedValue]];
     }
     return updateError == nil;
 }
