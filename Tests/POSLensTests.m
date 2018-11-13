@@ -291,13 +291,11 @@
                                                      error:nil];
     POSMutableLens<NSString *> *emailSettings = settings[@"privacySettings"][@"email"];
     XCTAssertEqualObjects(emailSettings.value, @"pavel@mail.ru");
-    BOOL updated = [emailSettings updateValue:@"andrey@mail.ru"];
-    XCTAssertTrue(updated);
+    [emailSettings forceUpdateValue:@"andrey@mail.ru"];
     XCTAssertEqualObjects(emailSettings.value, @"andrey@mail.ru");
     XCTAssertNotNil(logger.lastLogString);
     logger.lastLogString = nil;
-    BOOL removed = [settings removeValueAnyway];
-    XCTAssertTrue(removed);
+    [settings removeValueAnyway];
     XCTAssertNil(settings.value);
     XCTAssertNotNil(logger.lastLogString);
 }
@@ -522,7 +520,7 @@
     XCTAssertTrue(error.pos_category == kPOSInternalErrorCategory);
 }
 
-- (void)testSilentUpdateLensValueWithoutParentFailure {
+- (void)testForceUpdateLensValueWithoutParentFailure {
     POSMockLogger *logger = [[POSMockLogger alloc] init];
     POSMutableLens<NSDictionary *> *settings = [POSMutableLens
         lensWithDefaultValue:nil
@@ -530,8 +528,7 @@
         logger:logger
         error:nil];
     POSMutableLens<NSString *> *emailSetting = settings[@"pavel@mail.ru"][@"privacySettings"][@"email"];
-    BOOL updated = [emailSetting updateValue:@"andrey@mail.ru"];
-    XCTAssertFalse(updated);
+    [emailSetting forceUpdateValue:@"andrey@mail.ru"];
     XCTAssertNotNil(logger.lastLogString);
 }
 

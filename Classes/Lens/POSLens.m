@@ -142,8 +142,10 @@ typedef POSLensValue * _Nullable(^POSLensUpdateBlock)(POSLensValue * _Nullable o
         }];
 }
 
-- (BOOL)updateValueWithBlock:(POSLensUpdateBlock)updateBlock error:(NSError **)error {
-    return [self updateValueWithBlock:updateBlock ignoreStoreErrors:NO error:error];
+- (void)forceUpdateValue:(nullable POSLensValue *)value {
+    [self updateValueWithBlock:^id _Nullable(POSLensValue * _Nullable currentValue, NSError **error) {
+        return value;
+    } ignoreStoreErrors:YES error:nil];
 }
 
 - (BOOL)updateValue:(nullable POSLensValue *)value error:(NSError **)error {
@@ -152,26 +154,33 @@ typedef POSLensValue * _Nullable(^POSLensUpdateBlock)(POSLensValue * _Nullable o
     } ignoreStoreErrors:NO error:error];
 }
 
-- (BOOL)updateValue:(nullable POSLensValue *)value {
-    return [self updateValueWithBlock:^id _Nullable(POSLensValue * _Nullable currentValue, NSError **error) {
-        return value;
-    } ignoreStoreErrors:YES error:nil];
+- (void)forceUpdateValue:(nullable POSLensValue *)value atKey:(NSString *)key {
+    [[self lensForKey:key] forceUpdateValue:value];
 }
 
 - (BOOL)updateValue:(nullable POSLensValue *)value atKey:(NSString *)key error:(NSError **)error {
     return [[self lensForKey:key] updateValue:value error:error];
 }
 
-- (BOOL)updateValue:(nullable POSLensValue *)value atKey:(NSString *)key {
-    return [[self lensForKey:key] updateValue:value];
+- (void)forceUpdateValue:(nullable POSLensValue *)value atKeyPath:(NSString *)keyPath {
+    [[self lensForKeyPath:keyPath] forceUpdateValue:value];
 }
 
 - (BOOL)updateValue:(nullable POSLensValue *)value atKeyPath:(NSString *)keyPath error:(NSError **)error {
     return [[self lensForKeyPath:keyPath] updateValue:value error:error];
 }
 
-- (BOOL)updateValue:(nullable POSLensValue *)value atKeyPath:(NSString *)keyPath {
-    return [[self lensForKeyPath:keyPath] updateValue:value];
+- (void)forceUpdateValueWithBlock:(POSLensUpdateBlock)updateBlock {
+    [self updateValueWithBlock:updateBlock ignoreStoreErrors:YES error:nil];
+}
+
+- (BOOL)updateValueWithBlock:(POSLensUpdateBlock)updateBlock error:(NSError **)error {
+    return [self updateValueWithBlock:updateBlock ignoreStoreErrors:NO error:error];
+}
+
+- (void)forceUpdateValueAtKey:(NSString *)key
+                    withBlock:(id _Nullable (^)(id _Nullable oldValue, NSError **error))block {
+    [[self lensForKey:key] forceUpdateValueWithBlock:block];
 }
 
 - (BOOL)updateValueAtKey:(NSString *)key
@@ -180,9 +189,9 @@ typedef POSLensValue * _Nullable(^POSLensUpdateBlock)(POSLensValue * _Nullable o
     return [[self lensForKey:key] updateValueWithBlock:block error:error];
 }
 
-- (BOOL)updateValueAtKey:(NSString *)key
-               withBlock:(id _Nullable (^)(id _Nullable oldValue, NSError **error))block {
-    return [[self lensForKey:key] updateValueWithBlock:block];
+- (void)forceUpdateValueAtKeyPath:(NSString *)key
+                        withBlock:(id _Nullable (^)(id _Nullable oldValue, NSError **error))block {
+    [[self lensForKeyPath:key] forceUpdateValueWithBlock:block];
 }
 
 - (BOOL)updateValueAtKeyPath:(NSString *)key
@@ -191,25 +200,26 @@ typedef POSLensValue * _Nullable(^POSLensUpdateBlock)(POSLensValue * _Nullable o
     return [[self lensForKeyPath:key] updateValueWithBlock:block error:error];
 }
 
-- (BOOL)updateValueAtKeyPath:(NSString *)key
-                   withBlock:(id _Nullable (^)(id _Nullable oldValue, NSError **error))block {
-    return [[self lensForKeyPath:key] updateValueWithBlock:block];
-}
-
 - (void)setObject:(nullable POSLensValue *)value forKeyedSubscript:(NSString *)keyPath {
-    [[self lensForKeyPath:keyPath] updateValue:value];
+    [[self lensForKeyPath:keyPath] forceUpdateValue:value];
 }
 
 - (BOOL)removeValue:(NSError **)error {
-    return [self updateValueWithBlock:^POSLensValue * _Nullable(POSLensValue * _Nullable currentValue, NSError **error) {
-        return nil;
-    } ignoreStoreErrors:NO error:error];
+    return [self
+        updateValueWithBlock:^POSLensValue * _Nullable(POSLensValue * _Nullable currentValue, NSError **error) {
+            return nil;
+        }
+        ignoreStoreErrors:NO
+        error:error];
 }
 
-- (BOOL)removeValueAnyway {
-    return [self updateValueWithBlock:^POSLensValue * _Nullable(POSLensValue * _Nullable currentValue, NSError **error) {
-        return nil;
-    } ignoreStoreErrors:YES error:nil];
+- (void)removeValueAnyway {
+    [self
+        updateValueWithBlock:^POSLensValue * _Nullable(POSLensValue * _Nullable currentValue, NSError **error) {
+            return nil;
+        }
+        ignoreStoreErrors:YES
+        error:nil];
 }
 
 @end
@@ -264,7 +274,7 @@ typedef POSLensValue * _Nullable(^POSLensUpdateBlock)(POSLensValue * _Nullable o
                        error:(NSError **)error {
     POS_CHECK(updateBlock);
     @weakify(self);
-    return [_parent updateValueWithBlock:^POSLensValue * _Nullable(POSLensValue * _Nullable parentValue, NSError **error) {
+    __auto_type parentUpdateBlock = ^POSLensValue * _Nullable(POSLensValue * _Nullable parentValue, NSError **error) {
         @strongify(self); // self is never nil because of synchronous nature of updateBlock.
         id currentValue = [parentValue pos_valueForKey:self->_key];
         id updatedValue = updateBlock(currentValue, error);
@@ -281,7 +291,8 @@ typedef POSLensValue * _Nullable(^POSLensUpdateBlock)(POSLensValue * _Nullable o
         POSAssignError(error, [NSError pos_lensErrorWithFormat:
                                @"Parent of property %@ has neither value or default value.", self.keyPath]);
         return parentValue;
-    } ignoreStoreErrors:ignoreStoreErrors error:error];
+    };
+    return [_parent updateValueWithBlock:parentUpdateBlock ignoreStoreErrors:ignoreStoreErrors error:error];
 }
 
 @end
@@ -338,11 +349,11 @@ typedef POSLensValue * _Nullable(^POSLensUpdateBlock)(POSLensValue * _Nullable o
 #pragma mark - POSMutableLens
 
 - (BOOL)resetValue:(NSError **)error {
-    __auto_type updateBlock = ^POSLensValue * _Nullable(POSLensValue * _Nullable value, BOOL *flush, NSError **error) {
+    __auto_type saveBlock = ^POSLensValue * _Nullable(POSLensValue * _Nullable value, BOOL *flush, NSError **error) {
         *flush = NO;
         return [self->_store loadValue:error];
     };
-    return [self updateCurrentValueWithBlock:updateBlock ignoreStoreErrors:NO error:error];
+    return [self updateCurrentValueWithBlock:saveBlock ignoreStoreErrors:NO error:error];
 }
 
 - (BOOL)updateValueWithBlock:(POSLensUpdateBlock)block
@@ -354,7 +365,9 @@ typedef POSLensValue * _Nullable(^POSLensUpdateBlock)(POSLensValue * _Nullable o
     return [self updateCurrentValueWithBlock:updateBlock ignoreStoreErrors:ignoreStoreErrors error:error];
 }
 
-- (BOOL)updateCurrentValueWithBlock:(POSLensValue *  _Nullable (^)(POSLensValue * _Nullable, BOOL *flush, NSError **error))updateBlock
+- (BOOL)updateCurrentValueWithBlock:(POSLensValue *  _Nullable (^)(POSLensValue * _Nullable,
+                                                                   BOOL *flush,
+                                                                   NSError **error))updateBlock
                   ignoreStoreErrors:(BOOL)ignoreStoreErrors
                               error:(NSError **)error {
     POS_CHECK(updateBlock);
