@@ -17,6 +17,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef POSLensValue * _Nullable(^POSLensUpdateBlock)(POSLensValue * _Nullable oldValue, NSError **error);
+
 @implementation POSLensValueUpdate
 
 - (instancetype)initWithOldValue:(nullable POSLensValue *)oldValue
@@ -62,7 +64,13 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface POSMutableLens ()
+
 @property (nonatomic, readonly) RACSignal<POSLensValueUpdate<POSLensValue *> *> *recursiveValueUpdates;
+
+- (BOOL)updateValueWithBlock:(POSLensUpdateBlock)updateBlock
+           ignoreStoreErrors:(BOOL)ignoreStoreErrors
+                       error:(NSError **)error;
+
 @end
 
 //
@@ -134,45 +142,74 @@ NS_ASSUME_NONNULL_BEGIN
         }];
 }
 
-- (BOOL)updateValue:(nullable id)value error:(NSError **)error {
-    return [self updateValueWithBlock:^id _Nullable(id  _Nullable currentValue, NSError **error) {
+- (BOOL)updateValueWithBlock:(POSLensUpdateBlock)updateBlock error:(NSError **)error {
+    return [self updateValueWithBlock:updateBlock ignoreStoreErrors:NO error:error];
+}
+
+- (BOOL)updateValue:(nullable POSLensValue *)value error:(NSError **)error {
+    return [self updateValueWithBlock:^id _Nullable(POSLensValue * _Nullable currentValue, NSError **error) {
         return value;
-    } error:error];
+    } ignoreStoreErrors:NO error:error];
+}
+
+- (BOOL)updateValue:(nullable POSLensValue *)value {
+    return [self updateValueWithBlock:^id _Nullable(POSLensValue * _Nullable currentValue, NSError **error) {
+        return value;
+    } ignoreStoreErrors:YES error:nil];
 }
 
 - (BOOL)updateValue:(nullable POSLensValue *)value atKey:(NSString *)key error:(NSError **)error {
     return [[self lensForKey:key] updateValue:value error:error];
 }
 
+- (BOOL)updateValue:(nullable POSLensValue *)value atKey:(NSString *)key {
+    return [[self lensForKey:key] updateValue:value];
+}
+
 - (BOOL)updateValue:(nullable POSLensValue *)value atKeyPath:(NSString *)keyPath error:(NSError **)error {
     return [[self lensForKeyPath:keyPath] updateValue:value error:error];
 }
 
+- (BOOL)updateValue:(nullable POSLensValue *)value atKeyPath:(NSString *)keyPath {
+    return [[self lensForKeyPath:keyPath] updateValue:value];
+}
+
 - (BOOL)updateValueAtKey:(NSString *)key
-               withBlock:(POSLensValue * _Nullable (^)(__kindof POSLensValue * _Nullable, NSError **))block
+               withBlock:(id _Nullable (^)(id _Nullable oldValue, NSError **error))block
                    error:(NSError **)error {
     return [[self lensForKey:key] updateValueWithBlock:block error:error];
 }
 
+- (BOOL)updateValueAtKey:(NSString *)key
+               withBlock:(id _Nullable (^)(id _Nullable oldValue, NSError **error))block {
+    return [[self lensForKey:key] updateValueWithBlock:block];
+}
+
 - (BOOL)updateValueAtKeyPath:(NSString *)key
-                   withBlock:(POSLensValue * _Nullable (^)(__kindof POSLensValue * _Nullable, NSError **))block
+                   withBlock:(id _Nullable (^)(id _Nullable oldValue, NSError **error))block
                        error:(NSError **)error {
     return [[self lensForKeyPath:key] updateValueWithBlock:block error:error];
 }
 
+- (BOOL)updateValueAtKeyPath:(NSString *)key
+                   withBlock:(id _Nullable (^)(id _Nullable oldValue, NSError **error))block {
+    return [[self lensForKeyPath:key] updateValueWithBlock:block];
+}
+
 - (void)setObject:(nullable POSLensValue *)value forKeyedSubscript:(NSString *)keyPath {
-    NSError *error;
-    BOOL updated = [[self lensForKeyPath:keyPath] updateValue:value error:&error];
-    NSParameterAssert(updated);
-    if (!updated) {
-        NSLog(@"%@: Failed to update value %@: %@", self, keyPath, error);
-    }
+    [[self lensForKeyPath:keyPath] updateValue:value];
 }
 
 - (BOOL)removeValue:(NSError **)error {
-    return [self updateValueWithBlock:^id _Nullable(id  _Nullable currentValue, NSError **error) {
+    return [self updateValueWithBlock:^POSLensValue * _Nullable(POSLensValue * _Nullable currentValue, NSError **error) {
         return nil;
-    } error:error];
+    } ignoreStoreErrors:NO error:error];
+}
+
+- (BOOL)removeValueAnyway {
+    return [self updateValueWithBlock:^POSLensValue * _Nullable(POSLensValue * _Nullable currentValue, NSError **error) {
+        return nil;
+    } ignoreStoreErrors:YES error:nil];
 }
 
 @end
@@ -222,7 +259,8 @@ NS_ASSUME_NONNULL_BEGIN
     return [_parent resetValue:error];
 }
 
-- (BOOL)updateValueWithBlock:(POSLensValue * _Nullable(^)(POSLensValue * _Nullable, NSError **error))updateBlock
+- (BOOL)updateValueWithBlock:(POSLensUpdateBlock)updateBlock
+           ignoreStoreErrors:(BOOL)ignoreStoreErrors
                        error:(NSError **)error {
     POS_CHECK(updateBlock);
     @weakify(self);
@@ -243,7 +281,7 @@ NS_ASSUME_NONNULL_BEGIN
         POSAssignError(error, [NSError pos_lensErrorWithFormat:
                                @"Parent of property %@ has neither value or default value.", self.keyPath]);
         return parentValue;
-    } error:error];
+    } ignoreStoreErrors:ignoreStoreErrors error:error];
 }
 
 @end
@@ -251,19 +289,24 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 
 @interface POSRootLens : POSMutableLens
+
+@property (nonatomic, readonly, nullable) id<POSLogger> logger;
 @property (nonatomic, readonly) dispatch_queue_t syncQueue;
 @property (nonatomic, readonly) id<POSValueStore> store;
 @property (nonatomic, nullable) POSLensValue *currentValue;
 @property (nonatomic, readonly) RACSubject<POSLensValueUpdate<POSLensValue *> *> *updatesSubject;
+
 @end
 
 @implementation POSRootLens
 
 - (instancetype)initWithDefaultValue:(nullable POSLensValue *)defaultValue
                         currentValue:(nullable POSLensValue *)currentValue
-                               store:(id<POSValueStore>)store {
+                               store:(id<POSValueStore>)store
+                              logger:(nullable id<POSLogger>)logger {
     POS_CHECK(store);
     if (self = [super initWithDefaultValue:defaultValue]) {
+        _logger = logger;
         _syncQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         _store = store;
         _currentValue = currentValue;
@@ -299,18 +342,20 @@ NS_ASSUME_NONNULL_BEGIN
         *flush = NO;
         return [self->_store loadValue:error];
     };
-    return [self updateCurrentValueWithBlock:updateBlock error:error];
+    return [self updateCurrentValueWithBlock:updateBlock ignoreStoreErrors:NO error:error];
 }
 
-- (BOOL)updateValueWithBlock:(POSLensValue *  _Nullable (^)(POSLensValue * _Nullable, NSError **error))block
+- (BOOL)updateValueWithBlock:(POSLensUpdateBlock)block
+           ignoreStoreErrors:(BOOL)ignoreStoreErrors
                        error:(NSError **)error {
     __auto_type updateBlock = ^POSLensValue * _Nullable(POSLensValue * _Nullable value, BOOL *flush, NSError **error) {
         return block(value, error);
     };
-    return [self updateCurrentValueWithBlock:updateBlock error:error];
+    return [self updateCurrentValueWithBlock:updateBlock ignoreStoreErrors:ignoreStoreErrors error:error];
 }
 
 - (BOOL)updateCurrentValueWithBlock:(POSLensValue *  _Nullable (^)(POSLensValue * _Nullable, BOOL *flush, NSError **error))updateBlock
+                  ignoreStoreErrors:(BOOL)ignoreStoreErrors
                               error:(NSError **)error {
     POS_CHECK(updateBlock);
     __block BOOL flush = YES;
@@ -321,18 +366,26 @@ NS_ASSUME_NONNULL_BEGIN
     dispatch_barrier_sync(_syncQueue, ^{
         updatingValue = self->_currentValue;
         updatedValue = updateBlock(updatingValue, &flush, &updateError);
-        if (updateError == nil && updatedValue != updatingValue && ![updatedValue isEqual:updatingValue]) {
-            updated = flush ? [self->_store saveValue:updatedValue error:&updateError] : YES;
+        updated = (updateError == nil && updatedValue != updatingValue && ![updatedValue isEqual:updatingValue]);
+        if (updated) {
+            BOOL saved = flush ? [self->_store saveValue:updatedValue error:&updateError] : YES;
+            updated = saved || ignoreStoreErrors;
         }
         if (updated) {
             self.currentValue = updatedValue;
         }
     });
-    POSAssignError(error, updateError);
+    if (error) {
+        POSAssignError(error, updateError);
+    } else if (updateError) {
+        NSObject *failedValue = updatedValue ?: updatingValue;
+        NSString *failedValueName = NSStringFromClass(failedValue.class);
+        [_logger logError:@"Lens<%@>: Failed to update value: %@", failedValueName, updateError];
+    }
     if (updated) {
         [_updatesSubject sendNext:[[POSLensValueUpdate alloc] initWithOldValue:updatingValue actualValue:updatedValue]];
     }
-    return updateError == nil;
+    return updated;
 }
 
 @end
@@ -345,47 +398,56 @@ NS_ASSUME_NONNULL_BEGIN
     return [self
             lensWithDefaultValue:nil
             store:[[POSEphemeralValueStore alloc] initWithValue:value]
+            logger:nil
             error:nil];
 }
 
 + (nullable instancetype)lensWithDefaultValue:(nullable POSLensValue *)value
                                         store:(id<POSValueStore>)store
+                                       logger:(nullable id<POSLogger>)logger
                                         error:(NSError **)error {
     NSError *loadError;
     POSLensValue *currentValue = [store loadValue:&loadError];
     if (loadError != nil) {
+        [logger logError:@"Failed to create lens for %@ with default value %@: %@", store, value, loadError];
         POSAssignError(error, loadError);
         return nil;
     }
-    return [[POSRootLens alloc] initWithDefaultValue:value currentValue:currentValue store:store];
+    return [[POSRootLens alloc] initWithDefaultValue:value currentValue:currentValue store:store logger:logger];
 }
 
 + (nullable instancetype)lensWithDefaultValue:(nullable POSLensValue *)value
                                      filePath:(NSString *)filePath
+                                       logger:(nullable id<POSLogger>)logger
                                         error:(NSError **)error {
     return [self
             lensWithDefaultValue:value
             store:[[POSFileValueStore alloc] initWithFilePath:filePath]
+            logger:logger
             error:error];
 }
 
 + (nullable instancetype)lensWithDefaultValue:(nullable POSLensValue *)value
                               keychainService:(NSString *)service
                                      valueKey:(NSString *)valueKey
+                                       logger:(nullable id<POSLogger>)logger
                                         error:(NSError **)error {
     return [self
             lensWithDefaultValue:value
             store:[[POSKeychainValueStore alloc] initWithValueKey:valueKey service:service accessGroup:nil]
+            logger:logger
             error:error];
 }
 
 + (nullable instancetype)lensWithDefaultValue:(nullable POSLensValue *)value
                                  userDefaults:(NSUserDefaults *)userDefaults
                                      valueKey:(NSString *)valueKey
+                                       logger:(nullable id<POSLogger>)logger
                                         error:(NSError **)error {
     return [self
             lensWithDefaultValue:value
             store:[[POSUserDefaultsValueStore alloc] initWithUserDefaults:userDefaults valueKey:valueKey]
+            logger:logger
             error:error];
 }
 

@@ -166,9 +166,19 @@ POS_INIT_UNAVAILABLE
 ///             (a) there are neither parent object or the default value for it,
 ///             (b) underlying value store is in trouble to persist it.
 ///
-/// @returns    YES if the value was successfully persisted in the store.
+/// @returns    YES if the updated value was successfully persisted in the store.
 ///
 - (BOOL)updateValue:(nullable ValueType)value error:(NSError **)error;
+
+///
+/// @brief      Atomically updates underlying POSLenValue.
+///
+/// @remarks    The method always updates underlying value in memory.
+///             In a case of persisting failure, the error will be logged and ignored.
+///
+/// @returns    YES if the updated value was successfully updated at least in memory.
+///
+- (BOOL)updateValue:(nullable ValueType)value;
 
 ///
 /// @brief      Atomically updates underlying property with specified key.
@@ -177,9 +187,27 @@ POS_INIT_UNAVAILABLE
 ///             (a) there are neither parent object or the default value for it,
 ///             (b) underlying value store is in trouble to persist it.
 ///
-/// @returns    YES if the value was successfully persisted in the store.
+///             The difference between that method and updateValue:atKeyPath: is that
+///             key used as is without splitting it into components using dots symbols.
+///             The good example of such key is user's email – user@example.co.uk.
+///
+/// @returns    YES if the updated value was successfully persisted in the store.
 ///
 - (BOOL)updateValue:(nullable POSLensValue *)value atKey:(NSString *)key error:(NSError **)error;
+
+///
+/// @brief      Atomically updates underlying property with specified key.
+///
+/// @remarks    The method always updates underlying property with specified key in memory.
+///             In a case of persisting failure, the error will be logged and ignored.
+///
+/// @discussion The difference between that method and updateValue:atKeyPath: is that
+///             key used as is without splitting it into components using dots symbols.
+///             The good example of such key is user's email – user@example.co.uk.
+///
+/// @returns    YES if the updated value was successfully updated at least in memory.
+///
+- (BOOL)updateValue:(nullable POSLensValue *)value atKey:(NSString *)key;
 
 ///
 /// @brief      Atomically updates underlying property with specified keypath.
@@ -188,9 +216,29 @@ POS_INIT_UNAVAILABLE
 ///             (a) there are neither parent object or the default value for it,
 ///             (b) underlying value store is in trouble to persist it.
 ///
-/// @returns    YES if the value was successfully persisted in the store.
+///             The difference between that method and updateValue:atKey: is that
+///             keypath will be split into keys using dots symbols. So the value at
+///             keypath user@example.co.uk will be updated using three levels deeper lens:
+///             'user@example', 'co', 'uk'.
+///
+/// @returns    YES if the updated value was successfully persisted in the store.
 ///
 - (BOOL)updateValue:(nullable POSLensValue *)value atKeyPath:(NSString *)keyPath error:(NSError **)error;
+
+///
+/// @brief      Atomically updates underlying property with specified keypath.
+///
+/// @remarks    The method always updates underlying property with specified keypath in memory.
+///             In a case of persisting failure, the error will be logged and ignored.
+///
+/// @discussion The difference between that method and updateValue:atKey: is that
+///             keypath will be split into keys using dots symbols. So the value at
+///             keypath user@example.co.uk will be updated using three levels deeper lens:
+///             'user@example', 'co', 'uk'.
+///
+/// @returns    YES if the updated value was successfully updated at least in memory.
+///
+- (BOOL)updateValue:(nullable POSLensValue *)value atKeyPath:(NSString *)keyPath;
 
 ///
 /// @brief      Atomically replaces underlying POSLensValue with a new instance created by
@@ -207,10 +255,29 @@ POS_INIT_UNAVAILABLE
 ///             (a) there are neither parent object or the default value for it,
 ///             (b) underlying value store is in trouble to persist it.
 ///
-/// @returns    YES if the value was successfully persisted in the store.
+/// @returns    YES if the updated value was successfully persisted in the store.
 ///
 - (BOOL)updateValueWithBlock:(ValueType _Nullable (^)(ValueType _Nullable oldValue, NSError **error))updateBlock
                        error:(NSError **)error;
+
+///
+/// @brief      Atomically replaces underlying POSLensValue with a new instance created by
+///             the thread-safe updateBlock.
+///
+/// @discussion Update block provides current value as an input parameter for exclusive modification.
+///             Other value clients cannot read and modify it until block execution is in progress.
+///             This statement is true even if those clients use independent instances of the POSLens
+///             objects to manage the underlying value at the same path in the object's graph.
+///
+///             The most straightforward use-case for that method is incrementing some counter in a thread-safe manner.
+///
+/// @remarks    The method updates the underlying value in memory except for the case when block's error
+///             out parameter is not nil. When underlying persisting store failed to save the value,
+///             its error will be logged and ignored.
+///
+/// @returns    YES if the updated value was successfully updated at least in memory.
+///
+- (BOOL)updateValueWithBlock:(ValueType _Nullable (^)(ValueType _Nullable oldValue, NSError **error))updateBlock;
 
 ///
 /// @brief      Atomically property with specified key with a new instance created by
@@ -230,8 +297,28 @@ POS_INIT_UNAVAILABLE
 /// @returns    YES if the value was successfully persisted in the store.
 ///
 - (BOOL)updateValueAtKey:(NSString *)key
-               withBlock:(POSLensValue * _Nullable (^)(__kindof POSLensValue * _Nullable oldValue, NSError **error))block
+               withBlock:(id _Nullable (^)(id _Nullable oldValue, NSError **error))block
                    error:(NSError **)error;
+
+///
+/// @brief      Atomically property with specified key with a new instance created by
+///             the thread-safe updateBlock.
+///
+/// @discussion Update block provides current value as an input parameter for exclusive modification.
+///             Other value clients cannot read and modify it until block execution is in progress.
+///             This statement is true even if those clients use independent instances of the POSLens
+///             objects to manage the underlying value at the same path in the object's graph.
+///
+///             The most straightforward use-case for that method is incrementing some counter in a thread-safe manner.
+///
+/// @remarks    The method updates the property with specified key in memory except for the case when block's error
+///             out parameter is not nil. When underlying persisting store failed to save the value,
+///             its error will be logged and ignored.
+///
+/// @returns    YES if the updated value was successfully updated at least in memory.
+///
+- (BOOL)updateValueAtKey:(NSString *)key
+               withBlock:(id _Nullable (^)(id oldValue, NSError **error))block;
 
 ///
 /// @brief      Atomically property with specified keypath with a new instance created by
@@ -248,11 +335,31 @@ POS_INIT_UNAVAILABLE
 ///             (a) there are neither parent object or the default value for it,
 ///             (b) underlying value store is in trouble to persist it.
 ///
-/// @returns    YES if the value was successfully persisted in the store.
+/// @returns    YES if the updated value was successfully persisted in the store.
 ///
 - (BOOL)updateValueAtKeyPath:(NSString *)keyPath
-                   withBlock:(POSLensValue * _Nullable (^)(__kindof POSLensValue * _Nullable oldValue, NSError **error))block
+                   withBlock:(id _Nullable (^)(id _Nullable oldValue, NSError **error))block
                        error:(NSError **)error;
+
+///
+/// @brief      Atomically property with specified keypath with a new instance created by
+///             the thread-safe updateBlock.
+///
+/// @discussion Update block provides current value as an input parameter for exclusive modification.
+///             Other value clients cannot read and modify it until block execution is in progress.
+///             This statement is true even if those clients use independent instances of the POSLens
+///             objects to manage the underlying value at the same path in the object's graph.
+///
+///             The most straightforward use-case for that method is incrementing some counter in a thread-safe manner.
+///
+/// @remarks    The method updates the property with specified keypath in memory except for the case when block's error
+///             out parameter is not nil. When underlying persisting store failed to save the value,
+///             its error will be logged and ignored.
+///
+/// @returns    YES if the updated value was successfully updated at least in memory.
+///
+- (BOOL)updateValueAtKeyPath:(NSString *)keyPath
+                   withBlock:(id _Nullable (^)(id _Nullable oldValue, NSError **error))block;
 
 ///
 /// @brief      Shortcut for updateValue:atKeyPath:error:
@@ -267,6 +374,15 @@ POS_INIT_UNAVAILABLE
 /// @returns    YES if the value was successfully removed from the store.
 ///
 - (BOOL)removeValue:(NSError **)error;
+
+///
+/// @brief      Removes the value from memory and tries to remove it from the store.
+///
+/// @discussion Clients will receive the default value for that setting or nil if the default value doesn't exist.
+///
+/// @returns    YES if the updated value was successfully removed at least from memory.
+///
+- (BOOL)removeValueAnyway;
 
 @end
 
@@ -302,6 +418,7 @@ POS_INIT_UNAVAILABLE
 ///
 + (nullable instancetype)lensWithDefaultValue:(nullable POSLensValue *)value
                                         store:(id<POSValueStore>)store
+                                       logger:(nullable id<POSLogger>)logger
                                         error:(NSError **)error;
 
 ///
@@ -313,6 +430,7 @@ POS_INIT_UNAVAILABLE
 ///
 + (nullable instancetype)lensWithDefaultValue:(nullable POSLensValue *)value
                                      filePath:(NSString *)filePath
+                                       logger:(nullable id<POSLogger>)logger
                                         error:(NSError **)error;
 
 ///
@@ -326,6 +444,7 @@ POS_INIT_UNAVAILABLE
 + (nullable instancetype)lensWithDefaultValue:(nullable POSLensValue *)value
                               keychainService:(NSString *)service
                                      valueKey:(NSString *)valueKey
+                                       logger:(nullable id<POSLogger>)logger
                                         error:(NSError **)error;
 
 ///
@@ -340,6 +459,7 @@ POS_INIT_UNAVAILABLE
 + (nullable instancetype)lensWithDefaultValue:(nullable POSLensValue *)value
                                  userDefaults:(NSUserDefaults *)userDefaults
                                      valueKey:(NSString *)valueKey
+                                       logger:(nullable id<POSLogger>)logger
                                         error:(NSError **)error;
 
 @end
