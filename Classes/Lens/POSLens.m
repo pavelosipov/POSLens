@@ -398,7 +398,7 @@ typedef POSLensValue * _Nullable(^POSLensUpdateBlock)(POSLensValue * _Nullable o
     if (updated) {
         [_updatesSubject sendNext:[[POSLensValueUpdate alloc] initWithOldValue:updatingValue actualValue:updatedValue]];
     }
-    return updated;
+    return updateError == nil;
 }
 
 @end
