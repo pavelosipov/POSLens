@@ -318,7 +318,7 @@ typedef POSLensValue * _Nullable(^POSLensUpdateBlock)(POSLensValue * _Nullable o
     POS_CHECK(store);
     if (self = [super initWithDefaultValue:defaultValue]) {
         _logger = logger;
-        _syncQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        _syncQueue = dispatch_queue_create("com.github.pavelosipov.POSLens", DISPATCH_QUEUE_SERIAL);
         _store = store;
         _currentValue = currentValue;
         _updatesSubject = [RACSubject subject];
