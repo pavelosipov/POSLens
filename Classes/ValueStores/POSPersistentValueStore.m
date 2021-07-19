@@ -19,13 +19,12 @@ NS_ASSUME_NONNULL_BEGIN
     @try {
         if (value == nil) {
             return [self removeData:error];
-        }        
-        NSMutableData *data = [NSMutableData data];
-        NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc ] initForWritingWithMutableData:data];
+        }
+        NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initRequiringSecureCoding:NO];
         [archiver setOutputFormat:NSPropertyListBinaryFormat_v1_0];
         [archiver encodeRootObject:value];
         [archiver finishEncoding];
-        return [self saveData:data error:error];
+        return [self saveData:archiver.encodedData error:error];
     } @catch (NSException *exception) {
         POSAssignError(error, [NSError pos_systemErrorWithFormat:exception.reason]);
         return NO;
@@ -33,20 +32,28 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (nullable POSLensValue<NSCoding> *)loadValue:(NSError **)error {
-    @try {
-        NSData *data = [self loadData:error];
-        if (!data) {
-            return nil;
-        }
-        NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
-        POSLensValue<NSCoding> *value = [unarchiver decodeObject];
-        POS_CHECK([value conformsToProtocol:@protocol(POSLensPolicy)]);
-        POS_CHECK([value conformsToProtocol:@protocol(NSCopying)]);
-        return value;
-    } @catch (NSException *exception) {
-        POSAssignError(error, [NSError pos_systemErrorWithFormat:exception.reason]);
+    NSData *data = [self loadData:error];
+    if (!data) {
         return nil;
     }
+    NSError *unarchiveError = nil;
+    NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:data error:&unarchiveError];
+    [unarchiver setRequiresSecureCoding:NO];
+    POSLensValue<NSCoding> *value = [unarchiver decodeTopLevelObjectAndReturnError:&unarchiveError];
+    [unarchiver finishDecoding];
+    if (!value) {
+        POSAssignError(error, [NSError pos_systemErrorWithReason:unarchiveError]);
+        return nil;
+    }
+    if (![value conformsToProtocol:@protocol(POSLensPolicy)]) {
+        POSAssignError(error, [NSError pos_systemErrorWithFormat:@"Value doesn't conform to POSLensPolicy"]);
+        return nil;
+    }
+    if (![value conformsToProtocol:@protocol(NSCopying)]) {
+        POSAssignError(error, [NSError pos_systemErrorWithFormat:@"Value doesn't conform to NSCopying"]);
+        return nil;
+    }
+    return value;
 }
 
 #pragma mark - Public
