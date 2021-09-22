@@ -339,7 +339,7 @@ typedef POSLensValue * _Nullable(^POSLensUpdateBlock)(POSLensValue * _Nullable o
 - (RACSignal<POSLensValueUpdate<POSLensValue *> *> *)recursiveValueUpdates {
     return [[_updatesSubject
         takeUntil:self.rac_willDeallocSignal]
-        startWith:[[POSLensValueUpdate alloc] initWithOldValue:nil actualValue:_currentValue]];
+        startWith:[[POSLensValueUpdate alloc] initWithOldValue:nil actualValue:_currentValue ?: self.defaultValue]];
 }
 
 - (NSString *)keyPath {

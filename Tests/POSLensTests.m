@@ -590,4 +590,18 @@
     [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
+- (void)testRootDefaultValueInitialUpdate {
+    POSMutableLens<NSNumber *> *lens = [POSMutableLens
+                                        lensWithDefaultValue:@YES
+                                        store:[[POSEphemeralValueStore alloc] initWithValue:nil]
+                                        logger:nil
+                                        error:nil];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"value"];
+    [lens.valueUpdates subscribeNext:^(NSNumber *value) {
+        XCTAssertEqualObjects(value, @YES);
+        [expectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 @end
